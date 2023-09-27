@@ -41,13 +41,13 @@ class CardItem extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(children: [
               Container(
+                height: 40,
+                width: 40,
                 child: Image.asset(
                   "assets/imgs/example_profile.png",
                 ),
-                height: 40,
-                width: 40,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Text(item.student.name,
