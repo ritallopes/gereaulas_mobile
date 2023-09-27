@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/components/circular_progress.dart';
-import 'package:gereaulas_mobile/components/subject_list.dart';
 import 'package:gereaulas_mobile/models/teacher.dart';
 import 'package:gereaulas_mobile/utils/queries/user.dart';
 

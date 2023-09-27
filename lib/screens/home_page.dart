@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/components/circular_progress.dart';
 import 'package:gereaulas_mobile/components/header_home.dart';
-import 'package:gereaulas_mobile/components/subject_list.dart';
 import 'package:gereaulas_mobile/models/user.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:gereaulas_mobile/utils/queries/user.dart';

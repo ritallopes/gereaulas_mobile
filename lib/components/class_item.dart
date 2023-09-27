@@ -100,7 +100,7 @@ class CardItem extends StatelessWidget {
                 color: Colors.black,
                 fontWeight: FontWeight.w400),
           ),
-        )
+        ),
       ]),
     ]);
   }
