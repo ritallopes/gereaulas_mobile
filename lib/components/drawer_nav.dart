@@ -29,9 +29,9 @@ class ClassDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: const Text('Adicionar aulas'),
+            title: const Text('Assuntos das aulas'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
+              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
             },
           ),
            ListTile(
