@@ -34,8 +34,8 @@ class _MyAppState extends State<MyApp> {
         Routes.LOGIN_PAGE: (context) => LoginPage(_setUser),
         Routes.MAIN_PAGE: (context) => MainScreen(_user),
         Routes.HOME_PAGE: (context) => HomePage(_user),
-        Routes.CLASS_PAGE: (context) => ClassPage(_user ),
-        Routes.STUDENT_PAGE: (context) => StudentPage(),
+        Routes.CLASS_PAGE: (context) => ClassPage(_user),
+        Routes.STUDENT_PAGE: (context) => StudentPage(_user),
       },
     );
   }

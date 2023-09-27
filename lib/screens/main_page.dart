@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   @override
   void initState() {
-    pages = [HomePage(widget._user), ClassPage(widget._user), StudentPage()];
+    pages = [HomePage(widget._user), ClassPage(widget._user), StudentPage(widget._user)];
     super.initState();
   }
 

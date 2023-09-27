@@ -24,10 +24,16 @@ var DUMMY_RESPONSIBLE = [Responsible(email: 'maria@gmail.com', name: "Maria")];
 
 var DUMMY_STUDENT = [
   Student(
-      email: 'cassialinolopes@gmail.com',
-      address: 'endereço',
+      email: 'lala@gmail.com',
+      address: 'Av. Mor Gouveia',
       dateBirth: DateTime.parse('2007-07-20 20:18:04Z'),
       name: "Clara",
+      responsible: DUMMY_RESPONSIBLE[0]),
+  Student(
+      email: 'marcelo@gmail.com',
+      address: 'Av. Mor Gouveia',
+      dateBirth: DateTime.parse('2007-07-20 20:18:04Z'),
+      name: "Marcelo",
       responsible: DUMMY_RESPONSIBLE[0])
 ];
 
