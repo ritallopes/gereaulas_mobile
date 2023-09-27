@@ -55,6 +55,12 @@ class ClassDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
+            },
+          ),
+          ListTile(
             title: const Text('Adicionar aulas'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
@@ -75,6 +81,5 @@ class ClassDrawer extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

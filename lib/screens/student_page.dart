@@ -54,7 +54,7 @@ class StudentDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.HOME_PAGE);
+              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
             },
           ),
           ListTile(
