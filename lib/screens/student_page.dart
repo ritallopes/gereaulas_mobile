@@ -43,11 +43,11 @@ class StudentDrawer extends StatelessWidget {
               ),
             ),
             child: Text(
-              "Gerencie suas seus alunos",
+              "Gerencie seus alunos",
               style: TextStyle(
                   decoration: TextDecoration.none,
-                  fontSize: 15,
-                  color: Colors.black,
+                   fontSize: 17,
+                  color: Colors.white,
                   fontWeight: FontWeight.w700),
             ),
           ),

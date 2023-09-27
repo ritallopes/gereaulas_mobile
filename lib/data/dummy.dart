@@ -33,7 +33,7 @@ var DUMMY_STUDENT = [
       email: 'marcelo@gmail.com',
       address: 'Av. Mor Gouveia',
       dateBirth: DateTime.parse('2007-07-20 20:18:04Z'),
-      name: "Marcelo",
+      name: "Marcela",
       responsible: DUMMY_RESPONSIBLE[0])
 ];
 
@@ -54,7 +54,7 @@ var DUMMY_CLASS = [
   ClassSchedule(
       residential: true,
       paymentAmount: 60.0,
-      student: DUMMY_STUDENT[0],
+      student: DUMMY_STUDENT[1],
       subject: 'Matemática',
       teacher: DUMMY_TEACHERS[0],
       time: DUMMY_RESERVEDTIME[0],

@@ -11,7 +11,7 @@ class CircularProgress extends StatelessWidget {
           width: 80,
           height: 80,
           child: CircularProgressIndicator(
-            value: 0.7,
+            value: 4 / 5,
           ),
         ),
         SizedBox(

@@ -39,12 +39,24 @@ class CardItem extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(item.student.name,
-                style: const TextStyle(
-                    decoration: TextDecoration.none,
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600)),
+            child: Row(children: [
+              Container(
+                child: Image.asset(
+                  "assets/imgs/example_profile.png",
+                ),
+                height: 40,
+                width: 40,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(item.student.name,
+                  style: const TextStyle(
+                      decoration: TextDecoration.none,
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600)),
+            ]),
           ),
         ],
       ),
