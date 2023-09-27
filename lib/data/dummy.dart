@@ -58,5 +58,37 @@ var DUMMY_CLASS = [
       subject: 'Matemática',
       teacher: DUMMY_TEACHERS[0],
       time: DUMMY_RESERVEDTIME[0],
+      finished: false),
+  ClassSchedule(
+      residential: true,
+      paymentAmount: 60.0,
+      student: DUMMY_STUDENT[0],
+      subject: 'Geografia',
+      teacher: DUMMY_TEACHERS[0],
+      time: DUMMY_RESERVEDTIME[0],
+      finished: false),
+  ClassSchedule(
+      residential: true,
+      paymentAmount: 60.0,
+      student: DUMMY_STUDENT[1],
+      subject: 'Matemática',
+      teacher: DUMMY_TEACHERS[0],
+      time: DUMMY_RESERVEDTIME[0],
+      finished: false),
+  ClassSchedule(
+      residential: true,
+      paymentAmount: 60.0,
+      student: DUMMY_STUDENT[0],
+      subject: 'Geografia',
+      teacher: DUMMY_TEACHERS[0],
+      time: DUMMY_RESERVEDTIME[0],
+      finished: false),
+  ClassSchedule(
+      residential: true,
+      paymentAmount: 60.0,
+      student: DUMMY_STUDENT[1],
+      subject: 'Matemática',
+      teacher: DUMMY_TEACHERS[0],
+      time: DUMMY_RESERVEDTIME[0],
       finished: false)
 ];
