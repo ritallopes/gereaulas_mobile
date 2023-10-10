@@ -63,7 +63,7 @@ class ClassDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Adicionar aulas'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
+              Navigator.of(context).pushReplacementNamed(Routes.ADD_CLASS);
             },
           ),
           ListTile(

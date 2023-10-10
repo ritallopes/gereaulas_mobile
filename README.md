@@ -1,16 +1,7 @@
 # gereaulas_mobile
 
-A new Flutter project.
+### GereAulas: Gerenciador de aulas particulares para professores ocupados
 
-## Getting Started
+## Mais detalhes do projeto
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Histórias dos Usuários](https://docs.google.com/document/d/1ZMLp2Jv_MK-n3qjDYkDD6KRgFyWMfO-7qQCkPM16Vxw/edit?usp=sharing)

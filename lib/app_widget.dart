@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/user.dart';
+import 'package:gereaulas_mobile/screens/add_class.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
 import 'package:gereaulas_mobile/screens/home_page.dart';
 import 'package:gereaulas_mobile/screens/login_page.dart';
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> {
         Routes.HOME_PAGE: (context) => HomePage(_user),
         Routes.CLASS_PAGE: (context) => ClassPage(_user),
         Routes.STUDENT_PAGE: (context) => StudentPage(_user),
+        Routes.ADD_CLASS: (context) => AddClassPage(_user),
       },
     );
   }

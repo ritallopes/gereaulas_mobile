@@ -18,7 +18,7 @@ class CircularProgress extends StatelessWidget {
           height: 10,
         ),
         Text(
-          "Você já lencionou ${4}/${5} aulas",
+          "Você já concluiu ${4}/${5} aulas",
           style: TextStyle(
               decoration: TextDecoration.none,
               fontSize: 12,
