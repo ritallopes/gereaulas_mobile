@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/teacher.dart';
+import 'package:gereaulas_mobile/models/domain/teacher.dart';
 import 'package:gereaulas_mobile/utils/queries/user.dart';
 
 class HeaderHome extends StatelessWidget {
@@ -13,12 +13,12 @@ class HeaderHome extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: Container(
-              child: Image.asset(
-                "assets/imgs/example_profile.png",
-              ),
+            child: SizedBox(
               height: 100,
               width: 100,
+              child: Image.asset(
+                "assets/images/example_profile.png",
+              ),
             ),
           ),
           Expanded(
@@ -52,20 +52,20 @@ class HeaderHome extends StatelessWidget {
                   )
                 ],
               )),
-          Expanded(
-            flex: 1,
-            child: Container(
-              child: Image.asset(
-                "assets/imgs/logo_ga.png",
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-              ),
-              height: 60,
-              width: 60,
-            ),
-          ),
+          // Expanded(
+          //   flex: 1,
+          //   child: Container(
+          //     child: Image.asset(
+          //       "assets/images/logo_ga.png",
+          //     ),
+          //     decoration: const BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.all(Radius.circular(15)),
+          //     ),
+          //     height: 60,
+          //     width: 60,
+          //   ),
+          // ),
         ],
       ),
     );

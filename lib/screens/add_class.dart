@@ -1,25 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/user.dart';
-import 'package:intl/intl.dart';
-import 'package:gereaulas_mobile/utils/app_routes.dart';
+import 'package:gereaulas_mobile/components/drawer_nav.dart';
+
+import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
+import 'package:gereaulas_mobile/models/domain/student.dart';
+import 'package:gereaulas_mobile/models/domain/teacher.dart';
+import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/user.store.dart';
+import 'package:gereaulas_mobile/screens/class_page.dart';
+import 'package:gereaulas_mobile/utils/queries/user.dart';
+import 'package:provider/provider.dart';
 
 class AddClassPage extends StatefulWidget {
-  final User _user;
-  const AddClassPage(this._user);
+  const AddClassPage();
 
   @override
   State<AddClassPage> createState() => _AddClassPageState();
 }
 
 class _AddClassPageState extends State<AddClassPage> {
+  late UserStore userStore;
+  late ClassListStore classListStore;
+  List<Student> students = [];
+  Map<String, Object> formData = Map<String, Object>();
+
+  bool residentialIsChecked = true;
+  @override
+  void initState() {
+    residentialIsChecked = true;
+    formData = Map<String, Object>();
+    students = getStudentsList();
+    super.initState();
+  }
+
+  final _residentialFocus = FocusNode();
+  final _paymentAmountFocus = FocusNode();
+  final _subjectFocus = FocusNode();
+  final _studentFocus = FocusNode();
+
+  final _submitFocus = FocusNode();
+
   DateTime date_init = DateTime.now();
   DateTime date_end = DateTime.now();
 
   TimeOfDay time_init = TimeOfDay.now();
   TimeOfDay time_end = TimeOfDay.now();
 
+  void submit() {
+    ReservedTime time = ReservedTime(
+        start: DateTime(date_init.year, date_init.month, date_init.day,
+            time_init.hour, time_init.minute),
+        end: DateTime(date_end.year, date_end.month, date_end.day,
+            time_end.hour, time_end.minute));
+    formData['time'] = time;
+    ClassStore newClass = ClassStore(
+        time: time,
+        student: formData['student'] as Student,
+        teacher: formData['teacher'] as Teacher,
+        status: 'notStarted',
+        residential: formData['residential'] as bool,
+        paymentAmount: double.parse(formData['paymentAmount'].toString()),
+        subject: formData['subject'].toString());
+    classListStore.addClass(newClass);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ClassPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    userStore = Provider.of<UserStore>(context);
+    classListStore = Provider.of<ClassListStore>(context);
+    formData['teacher'] = getUserTeacher(userStore.email);
+    formData['status'] = 'notStarted';
+    formData['residential'] = true;
+
     _showDateInitPicker() {
       showDatePicker(
               context: context,
@@ -66,9 +122,23 @@ class _AddClassPageState extends State<AddClassPage> {
       });
     }
 
+    _showTimeEndPicker() {
+      showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      ).then((pickedDate) {
+        if (pickedDate == null) {
+          return;
+        }
+        setState(() {
+          time_end = pickedDate;
+        });
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text("Marcar aula")),
-      drawer: const AddClassDrawer(),
+      drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -83,7 +153,7 @@ class _AddClassPageState extends State<AddClassPage> {
             const Row(
               children: <Widget>[
                 Expanded(
-                  child: Text('Inicio'),
+                  child: Text('Início'),
                 ),
               ],
             ),
@@ -98,9 +168,12 @@ class _AddClassPageState extends State<AddClassPage> {
                 Expanded(
                   flex: 1,
                   child: TextButton(
-                    onPressed: _showDateEndPicker,
-                    child: const Icon(Icons.calendar_today,
-                        size: 24.0, semanticLabel: 'Definir Inicio'),
+                    onPressed: _showDateInitPicker,
+                    child: const Icon(
+                      Icons.calendar_today,
+                      size: 24.0,
+                      semanticLabel: 'Definir Início',
+                    ),
                   ),
                 )
               ],
@@ -110,14 +183,14 @@ class _AddClassPageState extends State<AddClassPage> {
                 const Spacer(flex: 1),
                 Expanded(
                   flex: 2,
-                  child: Text('${time_init.hour}/${time_init.minute}'),
+                  child: Text('${time_init.hour}:${time_init.minute}'),
                 ),
                 Expanded(
                   flex: 1,
                   child: TextButton(
                     onPressed: _showTimeInitPicker,
                     child: const Icon(Icons.lock_clock,
-                        size: 24.0, semanticLabel: 'Definir Inicio'),
+                        size: 24.0, semanticLabel: 'Definir Início'),
                   ),
                 )
               ],
@@ -152,70 +225,138 @@ class _AddClassPageState extends State<AddClassPage> {
                 const Spacer(flex: 1),
                 Expanded(
                   flex: 2,
-                  child: Text('${time_end.hour}/${time_end.minute}'),
+                  child: Text('${time_end.hour}:${time_end.minute}'),
                 ),
                 Expanded(
                   flex: 1,
                   child: TextButton(
-                    onPressed: _showTimeInitPicker,
+                    onPressed: _showTimeEndPicker,
                     child: const Icon(Icons.lock_clock,
-                        size: 24.0, semanticLabel: 'Definir Horario final'),
+                        size: 24.0, semanticLabel: 'Definir Horário final'),
                   ),
                 )
               ],
             ),
             const Padding(
               padding: const EdgeInsets.all(8.0),
+            ),
+
+            //Estudante dropdown
+            DropdownButtonFormField(
+              value: formData['student']?.toString(),
+              focusNode: _studentFocus,
+              hint: Text(formData.containsKey('student')
+                  ? ((formData['student']) as Student).name
+                  : "Selecione o estudante"),
+              items: students
+                  .map((e) => DropdownMenuItem(
+                      child: Text(e.name.toString()), value: e))
+                  .toList(),
+              onChanged: (student) => formData['student'] = student ?? '',
+              validator: (_student) {
+                final student = _student ?? '';
+
+                if ((student as Student).email != '') {
+                  return 'Obrigatório';
+                }
+
+                return null;
+              },
+              decoration: const InputDecoration(
+                labelText: 'Estudante',
+              ),
+              onSaved: (student) => formData['student'] = student ?? '',
+            ),
+            TextFormField(
+              initialValue: formData['subject']?.toString(),
+              decoration: const InputDecoration(
+                labelText: 'Assunto',
+              ),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              focusNode: _subjectFocus,
+              onChanged: (subject) => formData['subject'] = subject ?? '',
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(_paymentAmountFocus);
+              },
+              onSaved: (subject) => formData['subject'] = subject ?? '',
+              validator: (_subject) {
+                final subject = _subject ?? '';
+
+                if (subject.trim().isEmpty) {
+                  return 'Obrigatório';
+                }
+
+                return null;
+              },
+            ),
+            TextFormField(
+              initialValue: formData['paymentAmount']?.toString(),
+              decoration: const InputDecoration(
+                labelText: 'Valor da aula R\$',
+              ),
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) {
+                FocusScope.of(context).requestFocus(_residentialFocus);
+              },
+              onSaved: (paymentAmount) =>
+                  formData['paymentAmount'] = paymentAmount ?? '',
+              onChanged: (paymentAmount) =>
+                  formData['paymentAmount'] = paymentAmount ?? '',
+              validator: (_paymentAmount) {
+                final paymentAmount = _paymentAmount ?? '';
+
+                if (paymentAmount.trim().isEmpty) {
+                  return 'Obrigatório';
+                }
+
+                return null;
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10.0, 0.0, 5.0),
+              child: Row(
+                children: [
+                  Checkbox(
+                    focusNode: _residentialFocus,
+                    value: residentialIsChecked,
+                    onChanged: (residential) {
+                      formData['residential'] = residential ?? '';
+                      setState(() {
+                        residentialIsChecked = residential ?? false;
+                      });
+                    },
+                  ),
+                  const Text("A aula acontecerá no endereço do aluno")
+                ],
+              ),
+            ),
+            !residentialIsChecked
+                ? TextFormField(
+                    initialValue: formData['address']?.toString(),
+                    decoration: const InputDecoration(
+                      labelText: 'Endereço',
+                    ),
+                    keyboardType: TextInputType.streetAddress,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_submitFocus);
+                    },
+                    onSaved: (address) => formData['address'] = address ?? '',
+                  )
+                : Center(),
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: ElevatedButton(
+                  focusNode: _submitFocus,
+                  onPressed: submit,
+                  child: const Text("Agendar aula")),
             )
           ],
         ),
       ),
     );
-  }
-}
-
-class AddClassDrawer extends StatelessWidget {
-  const AddClassDrawer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  "assets/imgs/background.png",
-                ),
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            child: Text(
-              "Marque uma nova aula",
-              style: TextStyle(
-                  decoration: TextDecoration.none,
-                  fontSize: 17,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
-            },
-          ),
-          ListTile(
-            title: const Text('Aulas'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.CLASS_PAGE);
-            },
-          )
-        ],
-      ),
-    );
-    ;
   }
 }

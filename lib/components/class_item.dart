@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/class_schedule.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gereaulas_mobile/components/clone_dialog.dart';
+import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
+import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:provider/provider.dart';
 
 class ClassItem extends StatefulWidget {
-  late ClassSchedule item;
-  ClassItem(this.item);
+  late ClassStore item;
+  ClassItem(this.item, {super.key});
 
   @override
   State<ClassItem> createState() => _ClassItemState();
@@ -28,11 +33,28 @@ class _ClassItemState extends State<ClassItem> {
 }
 
 class CardItem extends StatelessWidget {
-  late ClassSchedule item;
-  CardItem(this.item);
+  late ClassStore item;
+  late ClassListStore classListStore;
+
+  CardItem(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    classListStore = Provider.of<ClassListStore>(context);
+    String formatTime(ReservedTime time) {
+      String start =
+          '${time.start.day.toString().padLeft(2, '0')}/${time.start.month.toString().padLeft(2, '0')}/${time.start.year} ${time.start.hour.toString().padLeft(2, '0')}:${time.start.minute.toString().padLeft(2, '0')} - ';
+      String end = time.start.day == time.end.day &&
+              time.start.month == time.end.month &&
+              time.start.year == time.end.year
+          ? ''
+          : '${time.end.day.toString().padLeft(2, '0')}/${time.end.month.toString().padLeft(2, '0')}/${time.end.year}';
+      end +=
+          ' ${time.end.hour.toString().padLeft(2, '0')}:${time.end.minute.toString().padLeft(2, '0')}';
+
+      return start + end;
+    }
+
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -40,11 +62,11 @@ class CardItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(children: [
-              Container(
+              SizedBox(
                 height: 40,
                 width: 40,
                 child: Image.asset(
-                  "assets/imgs/example_profile.png",
+                  "assets/images/profile.png",
                 ),
               ),
               const SizedBox(
@@ -93,7 +115,7 @@ class CardItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "${item.time.start.hour}:${item.time.start.minute} - ${item.time.start.hour}:${item.time.start.minute} ",
+            formatTime(item.time),
             style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontSize: 12,
@@ -102,6 +124,76 @@ class CardItem extends StatelessWidget {
           ),
         ),
       ]),
+      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child:
+              Icon(Icons.subject, color: Theme.of(context).colorScheme.primary),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            item.subject,
+            style: const TextStyle(
+                decoration: TextDecoration.none,
+                fontSize: 12,
+                color: Colors.black,
+                fontWeight: FontWeight.w400),
+          ),
+        ),
+      ]),
+      Observer(builder: (_) {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 70,
+                  height: 20,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CloneDialog(
+                            itemSource: item,
+                          );
+                        },
+                      );
+                    },
+                    child: const Text('Clonar', style: TextStyle(fontSize: 12)),
+                  ),
+                ),
+              ),
+              item.status != 'finished'
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 70,
+                        height: 20,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            String status = item.status == 'notStarted'
+                                ? 'started'
+                                : 'finished';
+                            classListStore.changeStatus(item, status);
+                          },
+                          child: Text(
+                              item.status == 'notStarted'
+                                  ? 'Iniciar'
+                                  : 'Finalizar',
+                              style: const TextStyle(fontSize: 12)),
+                        ),
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.check,
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+            ]);
+      }),
     ]);
   }
 }

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/user.dart';
+import 'package:gereaulas_mobile/models/domain/user.dart';
+import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final Function(User) onSubmitLogin;
+
   LoginPage(this.onSubmitLogin);
 
   @override
@@ -14,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late UserStore userStore;
   String _error = '';
   @override
   void initState() {
@@ -23,15 +28,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    userStore = Provider.of<UserStore>(context);
+
     _submitLogin() {
       final email = _emailController.text;
       final password = _passwordController.text;
-      print(email);
-      print(password);
       for (var user in DUMMY_USERS) {
         print(email == user.email);
         print(password == user.password);
         if (email == user.email && password == user.password) {
+          userStore.setEmail(email);
+          userStore.setPassword(password);
           widget.onSubmitLogin(user);
           Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
           return;
@@ -57,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Center(
                       child: Image.asset(
-                    "assets/imgs/logo_ga.png",
+                    "assets/images/logo_ga.png",
                     fit: BoxFit.fitWidth,
                     width: 100,
                     height: 100,
@@ -82,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextField(
                     controller: _emailController,
+                    onChanged: (value) => userStore.setEmail(value),
                     autofocus: true,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
@@ -95,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     autofocus: true,
                     controller: _passwordController,
+                    onChanged: (value) => userStore.setPassword(value),
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -102,10 +111,19 @@ class _LoginPageState extends State<LoginPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: ElevatedButton(
-                        onPressed: _submitLogin, child: const Text("Entrar")),
+                  Observer(
+                    builder: (_) => userStore.isAuthenticated
+                        ? Padding(
+                            padding: const EdgeInsets.all(30),
+                            child: ElevatedButton(
+                                onPressed: _submitLogin,
+                                child: const Text("Entrar")),
+                          )
+                        : const Padding(
+                            padding: EdgeInsets.all(30),
+                            child: ElevatedButton(
+                                onPressed: null, child: const Text("Entrar")),
+                          ),
                   ),
                 ],
               ),

@@ -45,10 +45,6 @@ class _MenuNavigationBarState extends State<MenuNavigationBar> {
             icon: Icon(Icons.school),
             label: 'Alunos',
           ),
-          /* BottomNavigationBarItem(
-            icon: Icon(Icons.face),
-            label: 'Perfil',
-          ),*/
         ],
         currentIndex: widget._selectedIndex,
         selectedItemColor: Theme.of(context).colorScheme.primary,

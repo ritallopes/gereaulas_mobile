@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/teacher.dart';
+import 'package:gereaulas_mobile/models/domain/teacher.dart';
 import 'package:gereaulas_mobile/utils/queries/user.dart';
 
 class SubjectList extends StatefulWidget {

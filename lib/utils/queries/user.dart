@@ -1,20 +1,37 @@
 import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/class_schedule.dart';
-import 'package:gereaulas_mobile/models/teacher.dart';
-import 'package:gereaulas_mobile/models/user.dart';
+import 'package:gereaulas_mobile/models/domain/student.dart';
+import 'package:gereaulas_mobile/models/domain/teacher.dart';
+import 'package:gereaulas_mobile/models/stores/class.store.dart';
 
-Teacher getUserTeacher(User _user) {
+Teacher getUserTeacher(String email) {
+  print("email " + email);
   for (var t in DUMMY_TEACHERS) {
-    if (t.email == _user.email) return t;
+    print(t);
+    if (t.email == email) return t;
   }
   return new Teacher();
 }
 
-List<ClassSchedule> getClassTeacher(Teacher _teacher) {
-  List<ClassSchedule> items = [];
+List<Student> getStudentsList() {
+  return DUMMY_STUDENT.toList();
+}
+
+List<ClassStore> getClassTeacher(Teacher _teacher) {
+  List<ClassStore> items = [];
 
   for (var c in DUMMY_CLASS) {
     if (_teacher.email == c.teacher.email) {
+      items.add(c);
+    }
+  }
+  return items;
+}
+
+List<ClassStore> getClassTeacherEmail(String emailteacher) {
+  List<ClassStore> items = [];
+
+  for (var c in DUMMY_CLASS) {
+    if (emailteacher == c.teacher.email) {
       items.add(c);
     }
   }
