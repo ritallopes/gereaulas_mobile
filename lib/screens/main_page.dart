@@ -4,7 +4,7 @@ import 'package:gereaulas_mobile/components/drawer_nav.dart';
 import 'package:gereaulas_mobile/components/menu_bar.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
-import 'package:gereaulas_mobile/screens/home_page.dart';
+import 'package:gereaulas_mobile/screens/home_teacher.dart';
 import 'package:gereaulas_mobile/utils/theme/theme_app.dart';
 import 'package:gereaulas_mobile/screens/student_page.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   @override
   void initState() {
-    pages = [HomePage(), ClassPage(), StudentPage()];
+    pages = [HomeTeacherPage(), ClassPage(), StudentPage()];
     super.initState();
   }
 

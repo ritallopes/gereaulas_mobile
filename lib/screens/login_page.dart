@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/domain/user.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function(User) onSubmitLogin;
-
-  LoginPage(this.onSubmitLogin);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -27,30 +24,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     userStore = Provider.of<UserStore>(context);
+    autorun((p0) => {
+          if (userStore.isAuthenticated)
+            {Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE)}
+        });
+  }
 
-    _submitLogin() {
-      final email = _emailController.text;
-      final password = _passwordController.text;
-      for (var user in DUMMY_USERS) {
-        print(email == user.email);
-        print(password == user.password);
-        if (email == user.email && password == user.password) {
-          userStore.setEmail(email);
-          userStore.setPassword(password);
-          widget.onSubmitLogin(user);
-          Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
-          return;
-        }
-      }
-      setState(() {
-        _error = 'Email ou senha incorreto!';
-      });
+  _submitLogin() {
+    userStore.login(userStore.email, userStore.password).then((loginSuccess) {
       _emailController.clear();
       _passwordController.clear();
-    }
+      if (loginSuccess) {
+        setState(() {
+          _error = '';
+        });
+      } else {
+        setState(() {
+          _error = 'Email ou senha incorreto!';
+        });
+      }
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   Observer(
-                    builder: (_) => userStore.isAuthenticated
+                    builder: (_) => userStore.isFieldLoginFilled
                         ? Padding(
                             padding: const EdgeInsets.all(30),
                             child: ElevatedButton(
@@ -124,6 +124,20 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                                 onPressed: null, child: const Text("Entrar")),
                           ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.REGISTER_PAGE);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        "Não tem conta? Cadastre-se!",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
                   ),
                 ],
               ),
