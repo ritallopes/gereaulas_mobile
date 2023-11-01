@@ -29,7 +29,6 @@ abstract class _UserStore with Store {
 
   @action
   void setEmail(String value) {
-    print(email);
     email = value;
   }
 
@@ -98,7 +97,6 @@ abstract class _UserStore with Store {
 
   @computed
   bool get isFieldLoginFilled {
-    print(email + " - " + password);
     return email != '' && password != '';
   }
 }

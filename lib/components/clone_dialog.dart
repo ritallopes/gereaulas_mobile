@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class CloneDialog extends StatefulWidget {
   ClassStore itemSource;
@@ -159,7 +157,7 @@ class _CloneDialogState extends State<CloneDialog> {
                 flex: 2,
                 child: Text(
                     '${time_init.hour.toString().padLeft(2, '0')}:${time_init.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(fontSize: 11)),
+                    style: const TextStyle(fontSize: 11)),
               ),
               Expanded(
                 flex: 1,
@@ -180,7 +178,7 @@ class _CloneDialogState extends State<CloneDialog> {
           ),
           Row(
             children: <Widget>[
-              Spacer(flex: 1),
+              const Spacer(flex: 1),
               Expanded(
                 flex: 2,
                 child: Text(
@@ -223,7 +221,7 @@ class _CloneDialogState extends State<CloneDialog> {
                 labelText: 'Assunto', labelStyle: TextStyle(fontSize: 12)),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
-            onChanged: (subject) => formData['subject'] = subject ?? '',
+            onChanged: (subject) => formData['subject'] = subject,
             onSaved: (subject) => formData['subject'] = subject ?? '',
             validator: (_subject) {
               final subject = _subject ?? '';
@@ -242,7 +240,7 @@ class _CloneDialogState extends State<CloneDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancelar', style: const TextStyle(fontSize: 12)),
+          child: const Text('Cancelar', style: TextStyle(fontSize: 12)),
         ),
         TextButton(
           onPressed: submitClone,

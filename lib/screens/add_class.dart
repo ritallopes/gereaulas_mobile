@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
 
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/student.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
-import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
-import 'package:gereaulas_mobile/utils/queries/user.dart';
 import 'package:provider/provider.dart';
 
 class AddClassPage extends StatefulWidget {
@@ -20,8 +20,11 @@ class AddClassPage extends StatefulWidget {
 
 class _AddClassPageState extends State<AddClassPage> {
   late UserStore userStore;
+
+  late TeacherStore teacher;
   late ClassListStore classListStore;
-  List<Student> students = [];
+
+  List<StudentStore> students = [];
   Map<String, Object> formData = Map<String, Object>();
 
   bool residentialIsChecked = true;
@@ -29,7 +32,6 @@ class _AddClassPageState extends State<AddClassPage> {
   void initState() {
     residentialIsChecked = true;
     formData = Map<String, Object>();
-    students = getStudentsList();
     super.initState();
   }
 
@@ -53,15 +55,14 @@ class _AddClassPageState extends State<AddClassPage> {
         end: DateTime(date_end.year, date_end.month, date_end.day,
             time_end.hour, time_end.minute));
     formData['time'] = time;
-    ClassStore newClass = ClassStore(
-        time: time,
-        student: formData['student'] as Student,
-        teacher: formData['teacher'] as Teacher,
-        status: 'notStarted',
-        residential: formData['residential'] as bool,
-        paymentAmount: double.parse(formData['paymentAmount'].toString()),
-        subject: formData['subject'].toString());
-    classListStore.addClass(newClass);
+    classListStore.addClassFromFields(
+      time: time,
+      student: formData['student'] as StudentStore,
+      teacher: formData['teacher'] as TeacherStore,
+      residential: formData['residential'] as bool,
+      paymentAmount: double.parse(formData['paymentAmount'].toString()),
+      subject: formData['subject'].toString(),
+    );
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => ClassPage()),
@@ -71,8 +72,13 @@ class _AddClassPageState extends State<AddClassPage> {
   @override
   Widget build(BuildContext context) {
     userStore = Provider.of<UserStore>(context);
+    students = Provider.of<StudentListStore>(context).students.toList();
+
     classListStore = Provider.of<ClassListStore>(context);
-    formData['teacher'] = getUserTeacher(userStore.email);
+    teacher = Provider.of<TeacherStore>(context);
+
+    formData['teacher'] = teacher;
+    //TODO
     formData['status'] = 'notStarted';
     formData['residential'] = true;
 
@@ -137,7 +143,7 @@ class _AddClassPageState extends State<AddClassPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Marcar aula")),
+      appBar: AppBarCustom(pageTitle: "Marcar aula"),
       drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -246,7 +252,7 @@ class _AddClassPageState extends State<AddClassPage> {
               value: formData['student']?.toString(),
               focusNode: _studentFocus,
               hint: Text(formData.containsKey('student')
-                  ? ((formData['student']) as Student).name
+                  ? ((formData['student']) as StudentStore).name
                   : "Selecione o estudante"),
               items: students
                   .map((e) => DropdownMenuItem(
@@ -256,7 +262,7 @@ class _AddClassPageState extends State<AddClassPage> {
               validator: (_student) {
                 final student = _student ?? '';
 
-                if ((student as Student).email != '') {
+                if ((student as StudentStore).email != '') {
                   return 'Obrigatório';
                 }
 

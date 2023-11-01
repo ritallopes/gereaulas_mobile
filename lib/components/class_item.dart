@@ -4,6 +4,8 @@ import 'package:gereaulas_mobile/components/clone_dialog.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
 import 'package:provider/provider.dart';
 
 class ClassItem extends StatefulWidget {
@@ -17,6 +19,7 @@ class ClassItem extends StatefulWidget {
 class _ClassItemState extends State<ClassItem> {
   @override
   Widget build(BuildContext context) {
+    print("Item " + widget.item.toString());
     return Column(
       children: <Widget>[
         Center(
@@ -35,12 +38,17 @@ class _ClassItemState extends State<ClassItem> {
 class CardItem extends StatelessWidget {
   late ClassStore item;
   late ClassListStore classListStore;
+  late StudentListStore studentListStore;
 
   CardItem(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
     classListStore = Provider.of<ClassListStore>(context);
+    studentListStore = Provider.of<StudentListStore>(context);
+
+    StudentStore student = studentListStore.findById(item.student);
+
     String formatTime(ReservedTime time) {
       String start =
           '${time.start.day.toString().padLeft(2, '0')}/${time.start.month.toString().padLeft(2, '0')}/${time.start.year} ${time.start.hour.toString().padLeft(2, '0')}:${time.start.minute.toString().padLeft(2, '0')} - ';
@@ -72,7 +80,7 @@ class CardItem extends StatelessWidget {
               const SizedBox(
                 width: 5,
               ),
-              Text(item.student.name,
+              Text(student.name ?? 'Nome',
                   style: const TextStyle(
                       decoration: TextDecoration.none,
                       fontSize: 14,
@@ -91,7 +99,7 @@ class CardItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            item.student.address,
+            student?.address ?? 'Sem endereço cadastrado',
             style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontSize: 12,

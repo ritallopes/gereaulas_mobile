@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
 import 'package:gereaulas_mobile/components/schedule_item.dart';
-import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
-import 'package:gereaulas_mobile/utils/queries/user.dart';
 import 'package:intl/intl.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
 import 'package:provider/provider.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -20,6 +20,9 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   late UserStore userStore;
+  late TeacherStore teacherStore;
+  late ClassListStore classStoreList;
+
   late RTimeRListStore rTimeRListStore;
 
   final _dateFormat = DateFormat('dd/MM/yyyy');
@@ -27,35 +30,41 @@ class _SchedulePageState extends State<SchedulePage> {
   late ReservedTimeTeacherStore newReservedTime;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    teacherStore = Provider.of<TeacherStore>(context);
+  }
+
+  @override
   void initState() {
     newReservedTime = ReservedTimeTeacherStore(
         reservedTime: ReservedTime(start: DateTime.now(), end: DateTime.now()),
-        teacher: new Teacher());
+        teacher: TeacherStore());
     super.initState();
   }
 
   setNewReservedTime(String email) {
     setState(() {
-      newReservedTime.teacher = getUserTeacher(email);
+      newReservedTime.teacher = teacherStore;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     userStore = Provider.of<UserStore>(context);
+    classStoreList = Provider.of<ClassListStore>(context);
     rTimeRListStore = Provider.of<RTimeRListStore>(context);
+
     setNewReservedTime(userStore.email);
 
-    getClassTeacherEmail(newReservedTime.teacher.email).forEach((e) =>
+    classStoreList.findByTeacher(newReservedTime.teacher.email).forEach((e) =>
         rTimeRListStore.addReservedTimeTeacher(
             ReservedTime(start: e.classTime.start, end: e.classTime.end),
             newReservedTime.teacher,
             true));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Agendar Horário'),
-      ),
+      appBar: AppBarCustom(pageTitle: "Agendar Horário"),
       drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,7 +137,7 @@ class _SchedulePageState extends State<SchedulePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Data de Fim'),
+                      const Text('Data de Fim'),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gereaulas_mobile/controllers/responsible_controller.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,13 +29,43 @@ class _LoginPageState extends State<LoginPage> {
     _error = '';
   }
 
+  late TeacherStoreList ts;
+  late ResponsibleStore responsibleStore;
+
+  late ClassListStore classListStore;
+  late StudentListStore studentListStore;
+  late TeacherStore teacherStore;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    ts = Provider.of<TeacherStoreList>(context);
+    classListStore = Provider.of<ClassListStore>(context);
+    studentListStore = Provider.of<StudentListStore>(context);
     userStore = Provider.of<UserStore>(context);
+    teacherStore = Provider.of<TeacherStore>(context);
+    responsibleStore = Provider.of<ResponsibleStore>(context);
+
     autorun((p0) => {
           if (userStore.isAuthenticated)
-            {Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE)}
+            {
+              Future.wait([
+                ts.initTeachers(),
+                classListStore.initClasses(),
+                studentListStore.initStudents(),
+                ResponsibleController.findAll()
+                    .then((value) => responsibleStore.copy(value.first))
+              ]).then((List<void> results) {
+                //if(userStore.type == UserType.TEACHER){}
+                teacherStore.copy(ts.getByEmail(userStore.email));
+                if (userStore.isAuthenticated) {
+                  Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
+                }
+              }).catchError((error) {
+                print("Erro durante a inicialização: $error");
+              })
+            }
         });
   }
 

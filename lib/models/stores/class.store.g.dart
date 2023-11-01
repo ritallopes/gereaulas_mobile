@@ -16,18 +16,18 @@ mixin _$ClassStore on _ClassStore, Store {
       (_$classTimeComputed ??= Computed<ReservedTime>(() => super.classTime,
               name: '_ClassStore.classTime'))
           .value;
-  Computed<Student>? _$classStudentComputed;
+  Computed<String>? _$classStudentComputed;
 
   @override
-  Student get classStudent =>
-      (_$classStudentComputed ??= Computed<Student>(() => super.classStudent,
+  String get classStudent =>
+      (_$classStudentComputed ??= Computed<String>(() => super.classStudent,
               name: '_ClassStore.classStudent'))
           .value;
-  Computed<Teacher>? _$classTeacherComputed;
+  Computed<String>? _$classTeacherComputed;
 
   @override
-  Teacher get classTeacher =>
-      (_$classTeacherComputed ??= Computed<Teacher>(() => super.classTeacher,
+  String get classTeacher =>
+      (_$classTeacherComputed ??= Computed<String>(() => super.classTeacher,
               name: '_ClassStore.classTeacher'))
           .value;
   Computed<bool>? _$isResidentialComputed;
@@ -65,118 +65,222 @@ mixin _$ClassStore on _ClassStore, Store {
           Computed<bool>(() => super.isValid, name: '_ClassStore.isValid'))
       .value;
 
-  late final _$timeAtom = Atom(name: '_ClassStore.time', context: context);
+  late final _$_timeAtom = Atom(name: '_ClassStore._time', context: context);
 
   @override
-  ReservedTime get time {
-    _$timeAtom.reportRead();
-    return super.time;
+  ReservedTime get _time {
+    _$_timeAtom.reportRead();
+    return super._time;
   }
 
   @override
-  set time(ReservedTime value) {
-    _$timeAtom.reportWrite(value, super.time, () {
-      super.time = value;
+  set _time(ReservedTime value) {
+    _$_timeAtom.reportWrite(value, super._time, () {
+      super._time = value;
     });
   }
 
-  late final _$studentAtom =
-      Atom(name: '_ClassStore.student', context: context);
+  late final _$_studentAtom =
+      Atom(name: '_ClassStore._student', context: context);
 
   @override
-  Student get student {
-    _$studentAtom.reportRead();
-    return super.student;
+  String get _student {
+    _$_studentAtom.reportRead();
+    return super._student;
   }
 
   @override
-  set student(Student value) {
-    _$studentAtom.reportWrite(value, super.student, () {
-      super.student = value;
+  set _student(String value) {
+    _$_studentAtom.reportWrite(value, super._student, () {
+      super._student = value;
     });
   }
 
-  late final _$teacherAtom =
-      Atom(name: '_ClassStore.teacher', context: context);
+  late final _$_teacherAtom =
+      Atom(name: '_ClassStore._teacher', context: context);
 
   @override
-  Teacher get teacher {
-    _$teacherAtom.reportRead();
-    return super.teacher;
+  String get _teacher {
+    _$_teacherAtom.reportRead();
+    return super._teacher;
   }
 
   @override
-  set teacher(Teacher value) {
-    _$teacherAtom.reportWrite(value, super.teacher, () {
-      super.teacher = value;
+  set _teacher(String value) {
+    _$_teacherAtom.reportWrite(value, super._teacher, () {
+      super._teacher = value;
     });
   }
 
-  late final _$residentialAtom =
-      Atom(name: '_ClassStore.residential', context: context);
+  late final _$_residentialAtom =
+      Atom(name: '_ClassStore._residential', context: context);
 
   @override
-  bool get residential {
-    _$residentialAtom.reportRead();
-    return super.residential;
+  bool get _residential {
+    _$_residentialAtom.reportRead();
+    return super._residential;
   }
 
   @override
-  set residential(bool value) {
-    _$residentialAtom.reportWrite(value, super.residential, () {
-      super.residential = value;
+  set _residential(bool value) {
+    _$_residentialAtom.reportWrite(value, super._residential, () {
+      super._residential = value;
     });
   }
 
-  late final _$paymentAmountAtom =
-      Atom(name: '_ClassStore.paymentAmount', context: context);
+  late final _$_paymentAmountAtom =
+      Atom(name: '_ClassStore._paymentAmount', context: context);
 
   @override
-  double get paymentAmount {
-    _$paymentAmountAtom.reportRead();
-    return super.paymentAmount;
+  double get _paymentAmount {
+    _$_paymentAmountAtom.reportRead();
+    return super._paymentAmount;
   }
 
   @override
-  set paymentAmount(double value) {
-    _$paymentAmountAtom.reportWrite(value, super.paymentAmount, () {
-      super.paymentAmount = value;
+  set _paymentAmount(double value) {
+    _$_paymentAmountAtom.reportWrite(value, super._paymentAmount, () {
+      super._paymentAmount = value;
     });
   }
 
-  late final _$subjectAtom =
-      Atom(name: '_ClassStore.subject', context: context);
+  late final _$_idAtom = Atom(name: '_ClassStore._id', context: context);
 
   @override
-  String get subject {
-    _$subjectAtom.reportRead();
-    return super.subject;
+  String get _id {
+    _$_idAtom.reportRead();
+    return super._id;
   }
 
   @override
-  set subject(String value) {
-    _$subjectAtom.reportWrite(value, super.subject, () {
-      super.subject = value;
+  set _id(String value) {
+    _$_idAtom.reportWrite(value, super._id, () {
+      super._id = value;
     });
   }
 
-  late final _$statusAtom = Atom(name: '_ClassStore.status', context: context);
+  late final _$_subjectAtom =
+      Atom(name: '_ClassStore._subject', context: context);
 
   @override
-  String get status {
-    _$statusAtom.reportRead();
-    return super.status;
+  String get _subject {
+    _$_subjectAtom.reportRead();
+    return super._subject;
   }
 
   @override
-  set status(String value) {
-    _$statusAtom.reportWrite(value, super.status, () {
-      super.status = value;
+  set _subject(String value) {
+    _$_subjectAtom.reportWrite(value, super._subject, () {
+      super._subject = value;
+    });
+  }
+
+  late final _$_statusAtom =
+      Atom(name: '_ClassStore._status', context: context);
+
+  @override
+  String get _status {
+    _$_statusAtom.reportRead();
+    return super._status;
+  }
+
+  @override
+  set _status(String value) {
+    _$_statusAtom.reportWrite(value, super._status, () {
+      super._status = value;
     });
   }
 
   late final _$_ClassStoreActionController =
       ActionController(name: '_ClassStore', context: context);
+
+  @override
+  void setTime(ReservedTime value) {
+    final _$actionInfo =
+        _$_ClassStoreActionController.startAction(name: '_ClassStore.setTime');
+    try {
+      return super.setTime(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setStudent(String value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setStudent');
+    try {
+      return super.setStudent(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setTeacher(String value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setTeacher');
+    try {
+      return super.setTeacher(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setResidential(bool value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setResidential');
+    try {
+      return super.setResidential(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPaymentAmount(double value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setPaymentAmount');
+    try {
+      return super.setPaymentAmount(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setId(String value) {
+    final _$actionInfo =
+        _$_ClassStoreActionController.startAction(name: '_ClassStore.setId');
+    try {
+      return super.setId(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSubject(String value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setSubject');
+    try {
+      return super.setSubject(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setStatus(String value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setStatus');
+    try {
+      return super.setStatus(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void changeStatus(String newStatus) {
@@ -192,13 +296,6 @@ mixin _$ClassStore on _ClassStore, Store {
   @override
   String toString() {
     return '''
-time: ${time},
-student: ${student},
-teacher: ${teacher},
-residential: ${residential},
-paymentAmount: ${paymentAmount},
-subject: ${subject},
-status: ${status},
 classTime: ${classTime},
 classStudent: ${classStudent},
 classTeacher: ${classTeacher},

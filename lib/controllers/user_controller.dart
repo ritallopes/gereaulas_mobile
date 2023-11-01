@@ -11,7 +11,7 @@ class UserController {
     String password,
     String type,
   ) async {
-    final response = await http.post(Uri.parse('${API_PATH}/users.json'),
+    final response = await http.post(Uri.parse('$API_PATH/users.json'),
         body:
             json.encode({'email': email, 'password': password, 'type': type}));
     if (response.statusCode == 200) {
@@ -20,9 +20,10 @@ class UserController {
         return findById(idUser);
       }
     }
+    return null;
   }
 
-  static UserStore createUserByJson(String id, Map<String, dynamic> json) {
+  static UserStore _createUserByJson(String id, Map<String, dynamic> json) {
     try {
       if (json['email'] == null ||
           json['password'] == null ||
@@ -49,15 +50,14 @@ class UserController {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        print(data.toString());
         if (data.isNotEmpty) {
-          return createUserByJson(id, data[id]);
+          return _createUserByJson(id, data);
         }
       } else {
         print('Falha ao buscar usuário: ${response.statusCode}');
       }
     } catch (error) {
-      print('Erro: $error');
+      print('Erro ao procurar user por id: $error');
     }
     return null;
   }
@@ -71,7 +71,10 @@ class UserController {
         if (data.isNotEmpty) {
           data.forEach((key, value) {
             String id = key;
-            users.add(createUserByJson(id, data[id]));
+            UserStore user = _createUserByJson(id, data[id]);
+            if (user.id != '') {
+              users.add(user);
+            }
           });
           return users;
         }
@@ -80,7 +83,7 @@ class UserController {
       }
     } catch (error) {
       print('no findAll');
-      print('Erro: $error');
+      print('Erro ao buscar todos os usuários: $error');
     }
     return [];
   }

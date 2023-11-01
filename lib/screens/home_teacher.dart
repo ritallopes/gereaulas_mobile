@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/circular_progress.dart';
 import 'package:gereaulas_mobile/components/header_home.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
-import 'package:gereaulas_mobile/utils/app_routes.dart';
-import 'package:gereaulas_mobile/utils/queries/user.dart';
+import 'package:gereaulas_mobile/screens/class_page.dart';
 import 'package:provider/provider.dart';
+import 'package:gereaulas_mobile/components/drawer_nav.dart';
 
 class HomeTeacherPage extends StatefulWidget {
-  const HomeTeacherPage();
+  const HomeTeacherPage({super.key});
 
   @override
   State<HomeTeacherPage> createState() => _HomeTeacherPageState();
@@ -15,15 +19,24 @@ class HomeTeacherPage extends StatefulWidget {
 
 class _HomeTeacherPageState extends State<HomeTeacherPage> {
   late UserStore userStore;
+  late TeacherStore teacherStore;
+  late StudentListStore studentListStore;
+
+  late ClassListStore classStoreList;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     userStore = Provider.of<UserStore>(context);
+    teacherStore = Provider.of<TeacherStore>(context);
+    classStoreList = Provider.of<ClassListStore>(context);
+    studentListStore = Provider.of<StudentListStore>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MainDrawer(),
+      appBar: AppBarCustom(pageTitle: "Home"),
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -33,15 +46,33 @@ class _HomeTeacherPageState extends State<HomeTeacherPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20),
-                child: HeaderHome(teacher: getUserTeacher(userStore.email)),
+                child: HeaderHome(teacher: teacherStore),
               ),
-              const Padding(
-                padding: EdgeInsets.all(20),
-                child: Row(children: [
-                  Expanded(flex: 3, child: SizedBox()),
-                  Expanded(flex: 2, child: CircularProgress()),
-                ]),
-              ),
+              Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: classStoreList.getClassTeacherToday.isNotEmpty
+                      ? const Row(children: [
+                          /*Expanded(
+                            flex: 3,
+                            child: Text(
+                              "Próxima aula: ${studentListStore.findById(classStoreList.allClass.first.student)}",
+                              style: const TextStyle(
+                                  decoration: TextDecoration.none,
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),*/
+                          Expanded(flex: 2, child: CircularProgress()),
+                        ])
+                      : const Text(
+                          "Você não tem aula agendada para hoje",
+                          style: TextStyle(
+                              decoration: TextDecoration.none,
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600),
+                        )),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Column(
@@ -76,8 +107,11 @@ class _HomeTeacherPageState extends State<HomeTeacherPage> {
                         height: 50,
                         child: ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pushReplacementNamed(Routes.CLASS_PAGE);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ClassPage()),
+                              );
                             },
                             child: const Text("Aulas de hoje")),
                       )

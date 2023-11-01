@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
 
 part 'r_time_t_list.store.g.dart';
 
@@ -17,9 +16,9 @@ abstract class _RTimeRListStore with Store {
   addInitialReservedTime(Class) {}
 
   @action
-  ObservableList<ReservedTimeTeacherStore> findByTeacher(String emailTeacher) {
+  ObservableList<ReservedTimeTeacherStore> findByTeacher(String idTeacher) {
     List<ReservedTimeTeacherStore> filteredList = reservedTimeList
-        .where((element) => element.teacher.email == emailTeacher)
+        .where((element) => element.teacher == idTeacher)
         .toList();
 
     return ObservableList.of(filteredList);
@@ -27,7 +26,7 @@ abstract class _RTimeRListStore with Store {
 
   @action
   void addReservedTimeTeacher(
-      ReservedTime reservedTime, Teacher teacher, bool isOccupied) {
+      ReservedTime reservedTime, TeacherStore teacher, bool isOccupied) {
     reservedTimeList.add(ReservedTimeTeacherStore(
       reservedTime:
           ReservedTime(start: reservedTime.start, end: reservedTime.end),

@@ -1,6 +1,6 @@
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/student.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
+import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:mobx/mobx.dart';
 part 'class.store.g.dart';
 
@@ -8,29 +8,92 @@ class ClassStore = _ClassStore with _$ClassStore;
 
 abstract class _ClassStore with Store {
   @observable
-  ReservedTime time =
-      new ReservedTime(start: DateTime.now(), end: DateTime.now());
+  ReservedTime _time = ReservedTime(start: DateTime.now(), end: DateTime.now());
+
+  ReservedTime get time => _time;
+
+  @action
+  void setTime(ReservedTime value) {
+    _time = value;
+  }
+
   @observable
-  Student student = new Student();
+  String _student = '';
+
+  String get student => _student;
+  @action
+  void setStudent(String value) {
+    _student = value;
+  }
+
   @observable
-  Teacher teacher = new Teacher();
+  String _teacher = '';
+
+  String get teacher => _teacher;
+
+  @action
+  void setTeacher(String value) {
+    _teacher = value;
+  }
+
   @observable
-  bool residential = true;
+  bool _residential = true;
+
+  bool get residential => _residential;
+
+  @action
+  void setResidential(bool value) {
+    _residential = value;
+  }
+
   @observable
-  double paymentAmount = 0;
+  double _paymentAmount = 0;
+
+  double get paymentAmount => _paymentAmount;
+
+  @action
+  void setPaymentAmount(double value) {
+    _paymentAmount = value;
+  }
+
   @observable
-  String subject = '';
+  String _id = '';
+
+  String get id => _id;
+
+  @action
+  void setId(String value) {
+    _id = value;
+  }
+
   @observable
-  String status = 'notStarted';
+  String _subject = '';
+
+  String get subject => _subject;
+
+  @action
+  void setSubject(String value) {
+    _subject = value;
+  }
+
+  @observable
+  String _status = 'notStarted';
+
+  String get status => _status;
+
+  @action
+  void setStatus(String value) {
+    _status = value;
+  }
 
   @computed
   ReservedTime get classTime => time;
 
   @computed
-  Student get classStudent => student;
+  String get classStudent => student;
 
   @computed
-  Teacher get classTeacher => teacher;
+  String get classTeacher => teacher;
 
   @computed
   bool get isResidential => residential;
@@ -45,20 +108,11 @@ abstract class _ClassStore with Store {
   String get classStatus => status;
 
   @computed
-  bool get isValid => student.email != '' && teacher.email != '';
-  @action
-  _ClassStore(
-      {required this.time,
-      required this.student,
-      required this.teacher,
-      this.residential = true,
-      this.paymentAmount = 0,
-      this.subject = '',
-      this.status = ''});
+  bool get isValid => student != '' && teacher != '';
 
   @action
   void changeStatus(String newStatus) {
-    status = newStatus;
+    _status = newStatus;
   }
 
   @override

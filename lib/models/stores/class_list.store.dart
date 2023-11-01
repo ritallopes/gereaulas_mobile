@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:gereaulas_mobile/data/dummy.dart';
+import 'package:gereaulas_mobile/controllers/class_controller.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/student.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
+import 'package:gereaulas_mobile/utils/utils_functions.dart';
 import 'package:mobx/mobx.dart';
 part 'class_list.store.g.dart';
 
@@ -11,7 +13,17 @@ class ClassListStore = _ClassListStore with _$ClassListStore;
 
 abstract class _ClassListStore with Store {
   @observable
-  ObservableList<ClassStore> allClass = ObservableList.of(DUMMY_CLASS);
+  ObservableList<ClassStore> allClass = ObservableList<ClassStore>();
+
+  _ClassListStore() {
+    initClasses();
+  }
+  @action
+  Future<void> initClasses() async {
+    List<ClassStore> classList = await ClassController.findAll();
+    allClass.clear();
+    allClass.addAll(classList);
+  }
 
   @action
   void addClass(ClassStore c) {
@@ -19,15 +31,39 @@ abstract class _ClassListStore with Store {
   }
 
   @action
+  void addClassFromFields({
+    required ReservedTime time,
+    required StudentStore student,
+    required TeacherStore teacher,
+    String status = 'notStarted',
+    required bool residential,
+    required double paymentAmount,
+    required String subject,
+  }) {
+    ClassStore newClass = ClassStore()
+      ..setTime(time)
+      ..setStudent(student.id)
+      ..setTeacher(teacher.id)
+      ..setStatus(status)
+      ..setResidential(residential)
+      ..setPaymentAmount(paymentAmount)
+      ..setSubject(subject);
+
+    allClass.add(newClass);
+  }
+
+  @action
   void createClassFormData(Map<String, Object> formData) {
-    ClassStore newClass = ClassStore(
-        time: formData['time'] as ReservedTime,
-        student: formData['student'] as Student,
-        teacher: formData['teacher'] as Teacher,
-        status: 'notStarted',
-        residential: formData['residential'] as bool,
-        paymentAmount: double.parse(formData['paymentAmount'].toString()),
-        subject: formData['subject'].toString());
+    ClassStore newClass = ClassStore();
+    newClass.setTime(formData['time'] as ReservedTime);
+    newClass.setStudent((formData['student'] as StudentStore).id);
+    newClass.setTeacher((formData['teacher'] as TeacherStore).id);
+    newClass.setStatus('notStarted');
+    newClass.setResidential(formData['residential'] as bool);
+    newClass
+        .setPaymentAmount(double.parse(formData['paymentAmount'].toString()));
+    newClass.setSubject(formData['subject'].toString());
+
     allClass.add(newClass);
   }
 
@@ -38,7 +74,7 @@ abstract class _ClassListStore with Store {
 
   @action
   void changeStatus(ClassStore item, String newStatus) {
-    item.status = newStatus;
+    item.setStatus(newStatus);
     allClass.forEachIndexed((index, element) {
       if (element.teacher == item.teacher &&
           element.student == item.student &&
@@ -51,22 +87,47 @@ abstract class _ClassListStore with Store {
 
   @action
   void cloneClass(ClassStore classSource, ReservedTime time, String subject) {
-    ClassStore newClass = ClassStore(
-        time: time,
-        student: classSource.student,
-        teacher: classSource.teacher,
-        status: classSource.status,
-        residential: classSource.residential,
-        paymentAmount: classSource.paymentAmount,
-        subject: subject);
+    ClassStore newClass = ClassStore();
+
     allClass.add(newClass);
   }
 
   @action
-  List<ClassStore> findByTeacher(String email) {
-    return allClass.where((c) {
-      String teacherEmail = c.teacher.email;
-      return teacherEmail.contains(email);
+  List<ClassStore> findByTeacher(String id) {
+    List<ClassStore> classes = [];
+    classes.addAll(allClass.where((c) {
+      return c.teacher.contains(id);
+    }).toList());
+    return classes;
+  }
+
+  @action
+  List<String> getSubjectsForTeacherOnCurrentDay(String id) {
+    DateTime currentDate = DateTime.now();
+
+    List<ClassStore> classesForTeacherOnCurrentDay = allClass.where((c) {
+      return c.teacher == id &&
+          differenceBetweenDate(c.time.start, currentDate) == 0;
     }).toList();
+
+    return classesForTeacherOnCurrentDay.map((c) => c.subject).toList();
+  }
+
+  @computed
+  List<ClassStore> get getClassTeacherToday {
+    DateTime currentDate = DateTime.now();
+    return allClass
+        .where((c) => differenceBetweenDate(c.time.start, currentDate) == 0)
+        .toList();
+  }
+
+  @computed
+  List<ClassStore> get getClassTeacherTodayFinished {
+    DateTime currentDate = DateTime.now();
+    return allClass
+        .where((c) =>
+            differenceBetweenDate(c.time.start, currentDate) == 0 &&
+            c.status == 'finished')
+        .toList();
   }
 }

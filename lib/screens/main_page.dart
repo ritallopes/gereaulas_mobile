@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/app_widget.dart';
-import 'package:gereaulas_mobile/components/drawer_nav.dart';
 import 'package:gereaulas_mobile/components/menu_bar.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
@@ -39,15 +38,9 @@ class _MainScreenState extends State<MainScreen> {
         ? MaterialApp(
             theme: ThemeApp.themeData,
             home: Scaffold(
-              appBar: AppBar(actions: [
-                Image.asset(
-                  "assets/images/logo_ga.png",
-                ),
-              ]),
               body: pages[_selectedIndex],
               bottomNavigationBar:
                   MenuNavigationBar(_selectedIndex, selectIndex),
-              drawer: MainDrawer(),
             ),
           )
         : MaterialApp(

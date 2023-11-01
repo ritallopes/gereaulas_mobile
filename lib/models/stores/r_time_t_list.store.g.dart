@@ -40,11 +40,11 @@ mixin _$RTimeRListStore on _RTimeRListStore, Store {
   }
 
   @override
-  ObservableList<ReservedTimeTeacherStore> findByTeacher(String emailTeacher) {
+  ObservableList<ReservedTimeTeacherStore> findByTeacher(String idTeacher) {
     final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
         name: '_RTimeRListStore.findByTeacher');
     try {
-      return super.findByTeacher(emailTeacher);
+      return super.findByTeacher(idTeacher);
     } finally {
       _$_RTimeRListStoreActionController.endAction(_$actionInfo);
     }
@@ -52,7 +52,7 @@ mixin _$RTimeRListStore on _RTimeRListStore, Store {
 
   @override
   void addReservedTimeTeacher(
-      ReservedTime reservedTime, Teacher teacher, bool isOccupied) {
+      ReservedTime reservedTime, TeacherStore teacher, bool isOccupied) {
     final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
         name: '_RTimeRListStore.addReservedTimeTeacher');
     try {

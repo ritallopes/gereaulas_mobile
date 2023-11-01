@@ -60,7 +60,7 @@ var DUMMY_RESERVEDTIME = [
       start: DateTime.parse('2023-09-30 11:00:04Z'),
       end: DateTime.parse('2023-09-30 12:00:04Z')),
 ];
-var DUMMY_CLASS = [
+/*var DUMMY_CLASS = [
   ClassStore(
     residential: true,
     paymentAmount: 60.0,
@@ -111,3 +111,4 @@ var DUMMY_CLASS = [
       time: DUMMY_RESERVEDTIME[0],
       status: 'notStarted')
 ];
+*/

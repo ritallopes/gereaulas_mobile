@@ -29,13 +29,13 @@ mixin _$ReservedTimeTeacherStore on _ReservedTimeTeacherStore, Store {
       Atom(name: '_ReservedTimeTeacherStore.teacher', context: context);
 
   @override
-  Teacher get teacher {
+  TeacherStore get teacher {
     _$teacherAtom.reportRead();
     return super.teacher;
   }
 
   @override
-  set teacher(Teacher value) {
+  set teacher(TeacherStore value) {
     _$teacherAtom.reportWrite(value, super.teacher, () {
       super.teacher = value;
     });

@@ -1,6 +1,6 @@
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
 
 part 'reserved_time_teacher.store.g.dart';
 
@@ -12,7 +12,7 @@ abstract class _ReservedTimeTeacherStore with Store {
   ReservedTime reservedTime;
 
   @observable
-  Teacher teacher;
+  TeacherStore teacher = TeacherStore();
 
   @observable
   bool isOccupied = false;

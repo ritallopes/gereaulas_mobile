@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/screens/add_class.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
 import 'package:gereaulas_mobile/screens/home_teacher.dart';
 import 'package:gereaulas_mobile/screens/login_page.dart';
 import 'package:gereaulas_mobile/screens/main_page.dart';
-import 'package:gereaulas_mobile/screens/register_screen.dart';
+import 'package:gereaulas_mobile/screens/register_users.dart';
 import 'package:gereaulas_mobile/screens/schedule_page.dart';
 import 'package:gereaulas_mobile/screens/student_page.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
@@ -28,12 +31,14 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<UserStore>(create: (_) => UserStore()),
+        Provider<TeacherStore>(create: (_) => TeacherStore()),
+        Provider<ResponsibleStore>(create: (_) => ResponsibleStore()),
+        Provider<TeacherStoreList>(create: (_) => TeacherStoreList()),
         Provider<ClassListStore>(create: (_) => ClassListStore()),
         Provider<StudentListStore>(create: (_) => StudentListStore()),
         Provider<RTimeRListStore>(create: (_) => RTimeRListStore()),
@@ -43,12 +48,12 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeApp.themeData,
         initialRoute: '/',
         routes: {
-          Routes.LOGIN_PAGE: (context) => LoginPage(),
+          Routes.LOGIN_PAGE: (context) => const LoginPage(),
           Routes.MAIN_PAGE: (context) => MainScreen(),
           Routes.HOME_TEACHER: (context) => const HomeTeacherPage(),
           Routes.CLASS_PAGE: (context) => ClassPage(),
           Routes.STUDENT_PAGE: (context) => const StudentPage(),
-          Routes.SCHEDULE_PAGE: (context) => SchedulePage(),
+          Routes.SCHEDULE_PAGE: (context) => const SchedulePage(),
           Routes.ADD_CLASS: (context) => const AddClassPage(),
           Routes.REGISTER_PAGE: (context) => const RegisterUserPage(),
         },

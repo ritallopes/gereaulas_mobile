@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/domain/student.dart';
+import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:provider/provider.dart';
 
 class StudentItem extends StatefulWidget {
-  late Student item;
-  StudentItem(this.item);
+  late StudentStore item;
+  StudentItem(this.item, {super.key});
 
   @override
   State<StudentItem> createState() => _StudentItemState();
@@ -28,11 +30,15 @@ class _StudentItemState extends State<StudentItem> {
 }
 
 class CardItem extends StatelessWidget {
-  late Student item;
-  CardItem(this.item);
+  late StudentStore item;
+  late ResponsibleStore responsibleStore;
+  CardItem(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
+    responsibleStore = Provider.of<ResponsibleStore>(context);
+    print("Name " + responsibleStore.name);
+
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -87,7 +93,7 @@ class CardItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            item.responsible?.name ?? 'Sem responsável cadastrado',
+            responsibleStore.name ?? 'Sem responsável cadastrado',
             style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontSize: 12,
@@ -105,7 +111,7 @@ class CardItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            item?.contato ?? 'Sem contato cadastrado',
+            item?.contact ?? 'Sem contato cadastrado',
             style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontSize: 12,

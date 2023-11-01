@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
-import 'package:gereaulas_mobile/utils/queries/user.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 
-class SubjectList extends StatefulWidget {
-  late Teacher teacher;
+class SubjectList extends StatelessWidget {
+  late TeacherStore teacher;
+  late ClassListStore classListStore;
   List<String> subjects = [];
 
-  SubjectList(this.teacher) {
-    subjects = subjectsClassToday(teacher);
+  SubjectList(this.teacher, this.classListStore, {super.key}) {
+    subjects = classListStore.getSubjectsForTeacherOnCurrentDay(teacher.id);
   }
 
   @override
-  State<SubjectList> createState() => _SubjectListState();
-}
-
-class _SubjectListState extends State<SubjectList> {
-  @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: widget.subjects.length,
+        itemCount: subjects.length,
         itemBuilder: (ctx, index) {
-          return Text(widget.subjects[index]);
+          return Text(subjects[index]);
         });
-    ;
   }
 }

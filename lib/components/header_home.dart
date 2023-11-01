@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
-import 'package:gereaulas_mobile/utils/queries/user.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:provider/provider.dart';
 
 class HeaderHome extends StatelessWidget {
-  Teacher teacher;
+  TeacherStore teacher;
+  late ClassListStore classListStore;
+
   HeaderHome({required this.teacher, super.key});
 
   @override
   Widget build(BuildContext context) {
+    teacher = Provider.of<TeacherStore>(context);
+    classListStore = Provider.of<ClassListStore>(context);
     return SizedBox(
       child: Row(
         children: [
@@ -41,15 +46,16 @@ class HeaderHome extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "Você tem ${countClassByTeacherToday(teacher).toString()} aulas hoje",
+                        "Você tem ${classListStore.findByTeacher(teacher.id).length.toString()} aulas hoje",
                         style: const TextStyle(
-                            decoration: TextDecoration.none,
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700),
+                          decoration: TextDecoration.none,
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               )),
           // Expanded(

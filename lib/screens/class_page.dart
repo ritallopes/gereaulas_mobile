@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/class_item.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
 
@@ -38,21 +39,31 @@ class _ClassPageState extends State<ClassPage> {
     classListStore = Provider.of<ClassListStore>(context);
 
     return Scaffold(
-        appBar: AppBar(title: const Text("Aulas")),
+        appBar: AppBarCustom(pageTitle: "Aulas"),
         drawer: MainDrawer(),
         body: Observer(builder: (_) {
-          var classSchedules = Provider.of<ClassListStore>(context)
-              .findByTeacher(userStore.email);
+          var classSchedules = [];
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
-              itemCount: classSchedules.length,
-              itemBuilder: (ctx, index) {
-                return ClassItem(classSchedules[index]);
-              },
-            ),
-          );
+          return classSchedules.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: classSchedules.length,
+                    itemBuilder: (ctx, index) {
+                      return ClassItem(classSchedules[index]);
+                    },
+                  ),
+                )
+              : const Center(
+                  child: Text(
+                    "Você não tem aulas agendadas",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
+                  ),
+                );
         }));
   }
 }
