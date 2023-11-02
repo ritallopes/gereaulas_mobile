@@ -1,4 +1,4 @@
-import 'package:gereaulas_mobile/models/reserved_time.dart';
+import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 
 class Path{
   String source;

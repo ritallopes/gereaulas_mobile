@@ -1,85 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/class_item.dart';
-import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/user.dart';
-import 'package:gereaulas_mobile/utils/app_routes.dart';
+import 'package:gereaulas_mobile/components/drawer_nav.dart';
 
-class ClassPage extends StatelessWidget {
-  final User _user;
-  ClassPage(this._user);
+import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/user.store.dart';
+import 'package:provider/provider.dart';
+
+class ClassPage extends StatefulWidget {
+  const ClassPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final classSchedules = DUMMY_CLASS.where((c) {
-      String teacherEmail = c.teacher.email;
-      return teacherEmail.contains(_user.email);
-    }).toList();
-
-    return Scaffold(
-      appBar: AppBar(title: Text("Aulas")),
-      drawer: ClassDrawer(),
-      body: ListView.builder(
-          itemCount: classSchedules.length,
-          itemBuilder: (ctx, index) {
-            return ClassItem(classSchedules[index]);
-          }),
-    );
-  }
+  State<ClassPage> createState() => _ClassPageState();
 }
 
-class ClassDrawer extends StatelessWidget {
-  const ClassDrawer({super.key});
+class _ClassPageState extends State<ClassPage> {
+  late UserStore userStore;
+  late ClassListStore classListStore;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Map<String, List<ClassStore>> groupBy(List<ClassStore> values) {
+    var map = <String, List<ClassStore>>{};
+    for (var classElement in values) {
+      map['${classElement.time.start.day}/${classElement.time.start.month}/${classElement.time.start.year}']!
+          .add(classElement);
+    }
+    return map;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  "assets/imgs/background.png",
-                ),
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            child: Text(
-              "Gerencie suas aulas",
-              style: TextStyle(
-                  decoration: TextDecoration.none,
-                  fontSize: 17,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
-            },
-          ),
-          ListTile(
-            title: const Text('Adicionar aulas'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
-            },
-          ),
-          ListTile(
-            title: const Text('Seus alunos'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
-            },
-          ),
-          ListTile(
-            title: const Text('Assuntos'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
-            },
-          )
-        ],
-      ),
-    );
+    userStore = Provider.of<UserStore>(context);
+    classListStore = Provider.of<ClassListStore>(context);
+
+    return Scaffold(
+        appBar: AppBarCustom(pageTitle: "Aulas"),
+        drawer: MainDrawer(),
+        body: Observer(builder: (_) {
+          var classSchedules = [];
+
+          return classSchedules.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                    itemCount: classSchedules.length,
+                    itemBuilder: (ctx, index) {
+                      return ClassItem(classSchedules[index]);
+                    },
+                  ),
+                )
+              : const Center(
+                  child: Text(
+                    "Você não tem aulas agendadas",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
+                  ),
+                );
+        }));
   }
 }

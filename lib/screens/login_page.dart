@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/user.dart';
+import 'package:gereaulas_mobile/controllers/responsible_controller.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function(User) onSubmitLogin;
-  LoginPage(this.onSubmitLogin);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -14,6 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late UserStore userStore;
   String _error = '';
   @override
   void initState() {
@@ -21,29 +29,64 @@ class _LoginPageState extends State<LoginPage> {
     _error = '';
   }
 
+  late TeacherStoreList ts;
+  late ResponsibleStore responsibleStore;
+
+  late ClassListStore classListStore;
+  late StudentListStore studentListStore;
+  late TeacherStore teacherStore;
+
   @override
-  Widget build(BuildContext context) {
-    _submitLogin() {
-      final email = _emailController.text;
-      final password = _passwordController.text;
-      print(email);
-      print(password);
-      for (var user in DUMMY_USERS) {
-        print(email == user.email);
-        print(password == user.password);
-        if (email == user.email && password == user.password) {
-          widget.onSubmitLogin(user);
-          Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
-          return;
-        }
-      }
-      setState(() {
-        _error = 'Email ou senha incorreto!';
-      });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    ts = Provider.of<TeacherStoreList>(context);
+    classListStore = Provider.of<ClassListStore>(context);
+    studentListStore = Provider.of<StudentListStore>(context);
+    userStore = Provider.of<UserStore>(context);
+    teacherStore = Provider.of<TeacherStore>(context);
+    responsibleStore = Provider.of<ResponsibleStore>(context);
+
+    autorun((p0) => {
+          if (userStore.isAuthenticated)
+            {
+              Future.wait([
+                ts.initTeachers(),
+                classListStore.initClasses(),
+                studentListStore.initStudents(),
+                ResponsibleController.findAll()
+                    .then((value) => responsibleStore.copy(value.first))
+              ]).then((List<void> results) {
+                //if(userStore.type == UserType.TEACHER){}
+                teacherStore.copy(ts.getByEmail(userStore.email));
+                if (userStore.isAuthenticated) {
+                  Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
+                }
+              }).catchError((error) {
+                print("Erro durante a inicialização: $error");
+              })
+            }
+        });
+  }
+
+  _submitLogin() {
+    userStore.login(userStore.email, userStore.password).then((loginSuccess) {
       _emailController.clear();
       _passwordController.clear();
-    }
+      if (loginSuccess) {
+        setState(() {
+          _error = '';
+        });
+      } else {
+        setState(() {
+          _error = 'Email ou senha incorreto!';
+        });
+      }
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -57,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   Center(
                       child: Image.asset(
-                    "assets/imgs/logo_ga.png",
+                    "assets/images/logo_ga.png",
                     fit: BoxFit.fitWidth,
                     width: 100,
                     height: 100,
@@ -82,6 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextField(
                     controller: _emailController,
+                    onChanged: (value) => userStore.setEmail(value),
                     autofocus: true,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
@@ -95,6 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     autofocus: true,
                     controller: _passwordController,
+                    onChanged: (value) => userStore.setPassword(value),
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
@@ -102,10 +147,33 @@ class _LoginPageState extends State<LoginPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: ElevatedButton(
-                        onPressed: _submitLogin, child: const Text("Entrar")),
+                  Observer(
+                    builder: (_) => userStore.isFieldLoginFilled
+                        ? Padding(
+                            padding: const EdgeInsets.all(30),
+                            child: ElevatedButton(
+                                onPressed: _submitLogin,
+                                child: const Text("Entrar")),
+                          )
+                        : const Padding(
+                            padding: EdgeInsets.all(30),
+                            child: ElevatedButton(
+                                onPressed: null, child: const Text("Entrar")),
+                          ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.REGISTER_PAGE);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        "Não tem conta? Cadastre-se!",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
                   ),
                 ],
               ),

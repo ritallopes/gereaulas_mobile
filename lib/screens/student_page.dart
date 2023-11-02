@@ -1,71 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/models/user.dart';
-import 'package:gereaulas_mobile/utils/app_routes.dart';
+import 'package:gereaulas_mobile/components/app_bar.dart';
+import 'package:gereaulas_mobile/components/drawer_nav.dart';
+import 'package:gereaulas_mobile/components/student_item.dart';
+import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/user.store.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class StudentPage extends StatefulWidget {
-  final User _user;
-
-  const StudentPage(this._user);
+  const StudentPage({super.key});
 
   @override
   State<StudentPage> createState() => _StudentPageState();
 }
 
 class _StudentPageState extends State<StudentPage> {
+  late UserStore userStore;
+  late StudentListStore studentListStore;
+  late ClassListStore classListStore;
+
   @override
   Widget build(BuildContext context) {
+    userStore = Provider.of<UserStore>(context);
+    studentListStore = Provider.of<StudentListStore>(context);
+    classListStore = Provider.of<ClassListStore>(context);
+    final myStudents =
+        studentListStore.findByTeacher(userStore.email, classListStore);
     return Scaffold(
-      appBar: AppBar(title: Text("Alunos")),
-      drawer: StudentDrawer(),
-      body: Container(
-        child: const Text("Student Page"),
-      ),
-    );
-  }
-}
-
-class StudentDrawer extends StatelessWidget {
-  const StudentDrawer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  "assets/imgs/background.png",
-                ),
-                fit: BoxFit.fitWidth,
-              ),
+        appBar: AppBarCustom(pageTitle: "Alunos"),
+        drawer: MainDrawer(),
+        body: Observer(builder: (_) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: myStudents.length,
+              itemBuilder: (ctx, index) {
+                return StudentItem(myStudents[index]);
+              },
             ),
-            child: Text(
-              "Gerencie seus alunos",
-              style: TextStyle(
-                  decoration: TextDecoration.none,
-                   fontSize: 17,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700),
-            ),
-          ),
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
-            },
-          ),
-          ListTile(
-            title: const Text('Assuntos'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed(Routes.STUDENT_PAGE);
-            },
-          )
-        ],
-      ),
-    );
-    ;
+          );
+        }));
   }
 }
