@@ -9,4 +9,6 @@ class Routes {
   static const REGISTER_PAGE = '/register_page';
 }
 
-const API_PATH = 'https://gereaulas-default-rtdb.firebaseio.com/';
+const API_PATH = 'https://gereaulas-default-rtdb.firebaseio.com';
+const API_LOCAL = 'http://127.0.0.1:8081';
+

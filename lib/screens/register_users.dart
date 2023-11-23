@@ -43,10 +43,11 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
     String name = _formData['name'].toString();
     String image_profile = _formData['image'].toString();
 
-    UserController.createUser(email, password, type.toUpperCase());
+    UserController.saveUser(email, password, type.toUpperCase());
     if (_selectedUserType == UserType.TEACHER) {
       Future<TeacherStore?> t =
-          TeacherController.createTeacher(name, email, image_profile);
+          TeacherController.saveTeacher(name, email, image_profile);
+      print(t.toString());
     }
     Navigator.of(context).pushNamed(
       Routes.LOGIN_PAGE,

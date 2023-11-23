@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/controllers/responsible_controller.dart';
+import 'package:gereaulas_mobile/controllers/teacher_controller.dart';
+import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
@@ -54,11 +56,14 @@ class _LoginPageState extends State<LoginPage> {
                 ts.initTeachers(),
                 classListStore.initClasses(),
                 studentListStore.initStudents(),
+                TeacherController.findByEmail(userStore.email).then(
+                    (value) => teacherStore.copy(value ?? TeacherStore())),
                 ResponsibleController.findAll()
                     .then((value) => responsibleStore.copy(value.first))
               ]).then((List<void> results) {
-                //if(userStore.type == UserType.TEACHER){}
-                teacherStore.copy(ts.getByEmail(userStore.email));
+                //TODO if(userStore.type == UserType.TEACHER){}
+                print(UserController.tokenUser);
+
                 if (userStore.isAuthenticated) {
                   Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
                 }
@@ -70,10 +75,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _submitLogin() {
-    userStore.login(userStore.email, userStore.password).then((loginSuccess) {
+    userStore.auth(userStore.email, userStore.password).then((loginSuccess) {
       _emailController.clear();
       _passwordController.clear();
-      if (loginSuccess) {
+      if (userStore.isAuthenticated) {
         setState(() {
           _error = '';
         });

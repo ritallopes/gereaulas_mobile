@@ -1,11 +1,76 @@
 import 'dart:convert';
 
+import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:http/http.dart' as http;
 
 class TeacherController {
   TeacherController();
+
+  static Future<TeacherStore?> saveTeacher(
+    String name,
+    String email,
+    String image_profile,
+  ) async {
+    try {
+      final response = await http.post(Uri.parse('$API_LOCAL/teachers'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode(
+              {'name': name, 'email': email, 'image_profile': image_profile}));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          return _createUserByMap(data);
+        }
+      }
+      return null;
+    } catch (e) {
+      print("Falha ao salvar professor: " + e.toString());
+    }
+  }
+
+  static TeacherStore _createUserByMap(Map<String, dynamic> json) {
+    try {
+      if (json['email'] == null || json['id'] == null) {
+        throw Exception("Dados de professor inválidos no JSON");
+      }
+      TeacherStore teacherStore = TeacherStore();
+
+      teacherStore.setId(json['id'].toString());
+      teacherStore.setEmail(json['email'].toString());
+      teacherStore.setName(json['name'].toString());
+      teacherStore.setImageProfile(json['image_profile'].toString());
+      return teacherStore;
+    } catch (e) {
+      print("Erro ao criar o professor a partir do Map: $e");
+      return TeacherStore();
+    }
+  }
+
+  static Future<TeacherStore?> findByEmail(String email) async {
+    String token = UserController.tokenUser;
+    if (token == '') return null;
+    final response =
+        await http.get(Uri.parse('$API_LOCAL/teachers/email/$email'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      if (data.isNotEmpty) {
+        return _createUserByMap(data);
+      }
+    } else {
+      print("Falha ao buscar professor por email");
+      return null;
+    }
+  }
+
   static Future<TeacherStore?> createTeacher(
     String name,
     String email,
@@ -64,23 +129,30 @@ class TeacherController {
   }
 
   static Future<List<TeacherStore>> findAll() async {
+    print("FINDALL\n");
+    String token = UserController.tokenUser;
+    if (token == '') return [];
     try {
-      final response = await http.get(Uri.parse('$API_PATH/teachers.json'));
+      final response =
+          await http.get(Uri.parse('$API_LOCAL/teachers'), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
       List<TeacherStore> teachers = [];
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+        final data = json.decode(response.body);
         if (data.isNotEmpty) {
-          data.forEach((key, value) {
-            String id = key;
-            teachers.add(createTeacherByJson(id, data[id]));
-          });
+          for (var t in data) {
+            teachers.add(_createUserByMap(t));
+          }
           return teachers;
         }
       } else {
-        print('Falha ao buscar professoress: ${response.statusCode}');
+        print('Falha ao buscar professores: ${response.statusCode}');
       }
     } catch (error) {
-      print('Erro ao buscar todos: $error');
+      print('Erro ao buscar toErrodos os professores: $error');
     }
     return [];
   }

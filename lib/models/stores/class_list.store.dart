@@ -4,7 +4,6 @@ import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/student.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
-import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
 import 'package:gereaulas_mobile/utils/utils_functions.dart';
 import 'package:mobx/mobx.dart';
 part 'class_list.store.g.dart';
@@ -20,7 +19,7 @@ abstract class _ClassListStore with Store {
   }
   @action
   Future<void> initClasses() async {
-    List<ClassStore> classList = await ClassController.findAll();
+    List<ClassStore> classList = await ClassController.findAllLocal();
     allClass.clear();
     allClass.addAll(classList);
   }

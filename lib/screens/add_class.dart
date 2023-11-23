@@ -65,7 +65,7 @@ class _AddClassPageState extends State<AddClassPage> {
     );
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ClassPage()),
+      MaterialPageRoute(builder: (context) => const ClassPage()),
     );
   }
 

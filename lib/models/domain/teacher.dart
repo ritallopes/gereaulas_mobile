@@ -6,6 +6,6 @@ class Teacher {
   Teacher({this.name = '', this.email = '', this.image_profile = ''});
   @override
   String toString() {
-    return 'Teacher{name: $name, email: $email, imageProfile: $image_profile}';
+    return 'Teacher{name: $name, email: $email, image_profile: $image_profile}';
   }
 }

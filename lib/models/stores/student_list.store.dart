@@ -17,7 +17,7 @@ abstract class _StudentListStore with Store {
 
   @action
   Future<void> initStudents() async {
-    List<StudentStore> studentsList = await StudentController.findAll();
+    List<StudentStore> studentsList = await StudentController.findAllLocal();
     students.clear();
     students.addAll(studentsList);
   }
