@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
-import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:provider/provider.dart';
 
 class CircularProgress extends StatefulWidget {

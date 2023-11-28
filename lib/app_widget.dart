@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
-import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
@@ -37,11 +37,11 @@ class _MyAppState extends State<MyApp> {
       providers: [
         Provider<UserStore>(create: (_) => UserStore()),
         Provider<TeacherStore>(create: (_) => TeacherStore()),
-        Provider<ResponsibleStore>(create: (_) => ResponsibleStore()),
+        Provider<ResponsibleListStore>(create: (_) => ResponsibleListStore()),
         Provider<TeacherStoreList>(create: (_) => TeacherStoreList()),
         Provider<ClassListStore>(create: (_) => ClassListStore()),
         Provider<StudentListStore>(create: (_) => StudentListStore()),
-        Provider<RTimeRListStore>(create: (_) => RTimeRListStore()),
+        Provider<TimeListStore>(create: (_) => TimeListStore()),
       ],
       child: MaterialApp(
         title: 'GereAulas',

@@ -35,6 +35,16 @@ abstract class _StudentStore with Store {
   void setAddress(String value) => address = value;
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StudentStore && other.id == id && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
+
+  @override
   String toString() {
     return 'Student{'
         'email: $email, '

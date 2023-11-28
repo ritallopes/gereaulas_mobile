@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 
 class ScheduleItem extends StatefulWidget {
@@ -32,16 +30,18 @@ class CardItem extends StatelessWidget {
   late ReservedTimeTeacherStore item;
   CardItem(this.item, {super.key});
 
-  String formatTime(ReservedTime time) {
+  String formatTime(ReservedTimeTeacherStore time) {
     String start =
         '${time.start.day.toString().padLeft(2, '0')}/${time.start.month.toString().padLeft(2, '0')}/${time.start.year} ${time.start.hour.toString().padLeft(2, '0')}:${time.start.minute.toString().padLeft(2, '0')} - ';
-    String end = time.start.day == time.end.day &&
-            time.start.month == time.end.month &&
-            time.start.year == time.end.year
+
+    String end = time.start.day == time.endTime.day &&
+            time.start.month == time.endTime.month &&
+            time.start.year == time.endTime.year
         ? ''
-        : '${time.end.day.toString().padLeft(2, '0')}/${time.end.month.toString().padLeft(2, '0')}/${time.end.year}';
+        : '${time.endTime.day.toString().padLeft(2, '0')}/${time.endTime.month.toString().padLeft(2, '0')}/${time.endTime.year}';
+
     end +=
-        ' ${time.end.hour.toString().padLeft(2, '0')}:${time.end.minute.toString().padLeft(2, '0')}';
+        ' ${time.endTime.hour.toString().padLeft(2, '0')}:${time.endTime.minute.toString().padLeft(2, '0')}';
 
     return start + end;
   }
@@ -58,7 +58,7 @@ class CardItem extends StatelessWidget {
               width: 5,
             ),
             Text(
-              formatTime(item.reservedTime),
+              formatTime(item),
               style: const TextStyle(fontSize: 15),
             ),
           ],

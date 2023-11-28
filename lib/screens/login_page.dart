@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/controllers/responsible_controller.dart';
 import 'package:gereaulas_mobile/controllers/teacher_controller.dart';
-import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
-import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
@@ -23,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   late UserStore userStore;
   String _error = '';
   @override
@@ -31,39 +31,39 @@ class _LoginPageState extends State<LoginPage> {
     _error = '';
   }
 
-  late TeacherStoreList ts;
-  late ResponsibleStore responsibleStore;
+  late TeacherStoreList teacherList;
+  late ResponsibleListStore responsibleListStore;
 
   late ClassListStore classListStore;
   late StudentListStore studentListStore;
   late TeacherStore teacherStore;
+  late TimeListStore timesListStore;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    ts = Provider.of<TeacherStoreList>(context);
+    teacherList = Provider.of<TeacherStoreList>(context);
     classListStore = Provider.of<ClassListStore>(context);
+    timesListStore = Provider.of<TimeListStore>(context);
+
     studentListStore = Provider.of<StudentListStore>(context);
     userStore = Provider.of<UserStore>(context);
     teacherStore = Provider.of<TeacherStore>(context);
-    responsibleStore = Provider.of<ResponsibleStore>(context);
+    responsibleListStore = Provider.of<ResponsibleListStore>(context);
 
     autorun((p0) => {
           if (userStore.isAuthenticated)
             {
               Future.wait([
-                ts.initTeachers(),
+                teacherList.initTeachers(),
                 classListStore.initClasses(),
                 studentListStore.initStudents(),
+                timesListStore.initTimes(),
                 TeacherController.findByEmail(userStore.email).then(
                     (value) => teacherStore.copy(value ?? TeacherStore())),
-                ResponsibleController.findAll()
-                    .then((value) => responsibleStore.copy(value.first))
+                responsibleListStore.initResponsibles()
               ]).then((List<void> results) {
-                //TODO if(userStore.type == UserType.TEACHER){}
-                print(UserController.tokenUser);
-
                 if (userStore.isAuthenticated) {
                   Navigator.of(context).pushReplacementNamed(Routes.MAIN_PAGE);
                 }
@@ -132,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailController,
                     onChanged: (value) => userStore.setEmail(value),
                     autofocus: true,
+                    textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Email',
@@ -142,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   TextField(
-                    autofocus: true,
+                    textInputAction: TextInputAction.next,
                     controller: _passwordController,
                     onChanged: (value) => userStore.setPassword(value),
                     obscureText: true,

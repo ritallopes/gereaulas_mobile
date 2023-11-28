@@ -42,7 +42,7 @@ class _ClassPageState extends State<ClassPage> {
         appBar: AppBarCustom(pageTitle: "Aulas"),
         drawer: MainDrawer(),
         body: Observer(builder: (_) {
-          var classSchedules = [];
+          var classSchedules = classListStore.allClass;
 
           return classSchedules.isNotEmpty
               ? Padding(

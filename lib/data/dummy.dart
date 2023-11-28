@@ -2,7 +2,6 @@ import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/domain/responsible.dart';
 import 'package:gereaulas_mobile/models/domain/student.dart';
 import 'package:gereaulas_mobile/models/domain/teacher.dart';
-import 'package:gereaulas_mobile/models/stores/class.store.dart';
 
 var DUMMY_TEACHERS = [
   Teacher(

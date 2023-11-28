@@ -3,11 +3,9 @@ import 'package:gereaulas_mobile/app_widget.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/screens/add_class.dart';
 import 'package:gereaulas_mobile/screens/class_page.dart';
-import 'package:gereaulas_mobile/screens/login_page.dart';
 import 'package:gereaulas_mobile/screens/main_page.dart';
 import 'package:gereaulas_mobile/screens/schedule_page.dart';
 import 'package:gereaulas_mobile/screens/student_page.dart';
-import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -99,6 +97,6 @@ class MainDrawer extends StatelessWidget {
         ],
       ),
     );
-    ;
+    
   }
 }

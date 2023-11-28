@@ -48,7 +48,7 @@ class StudentController {
       studentStore.setName(json['name'].toString());
       studentStore.setAddress(json['address']..toString());
       studentStore.setDateBirth(json['dateBirth'].toString());
-      studentStore.setIdResponsible(json['idResponsible'].toString());
+      studentStore.setIdResponsible(json['responsible']['id'].toString());
       return studentStore;
     } catch (e) {
       print("Erro ao criar o aluno a partir do Map: $e");
@@ -57,7 +57,6 @@ class StudentController {
   }
 
   static Future<List<StudentStore>> findAllLocal() async {
-    print("FINDALL Aluno\n");
     String token = UserController.tokenUser;
     if (token == '') return [];
     try {

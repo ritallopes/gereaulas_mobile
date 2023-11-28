@@ -17,6 +17,21 @@ mixin _$UserStore on _UserStore, Store {
               name: '_UserStore.isFieldLoginFilled'))
       .value;
 
+  late final _$tokenAtom = Atom(name: '_UserStore.token', context: context);
+
+  @override
+  String get token {
+    _$tokenAtom.reportRead();
+    return super.token;
+  }
+
+  @override
+  set token(String value) {
+    _$tokenAtom.reportWrite(value, super.token, () {
+      super.token = value;
+    });
+  }
+
   late final _$idAtom = Atom(name: '_UserStore.id', context: context);
 
   @override
@@ -79,6 +94,14 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
+  late final _$authAsyncAction =
+      AsyncAction('_UserStore.auth', context: context);
+
+  @override
+  Future<bool> auth(String email, String password) {
+    return _$authAsyncAction.run(() => super.auth(email, password));
+  }
+
   late final _$loginAsyncAction =
       AsyncAction('_UserStore.login', context: context);
 
@@ -124,6 +147,17 @@ mixin _$UserStore on _UserStore, Store {
   }
 
   @override
+  void setToken(String value) {
+    final _$actionInfo =
+        _$_UserStoreActionController.startAction(name: '_UserStore.setToken');
+    try {
+      return super.setToken(value);
+    } finally {
+      _$_UserStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setType(String value) {
     final _$actionInfo =
         _$_UserStoreActionController.startAction(name: '_UserStore.setType');
@@ -148,6 +182,7 @@ mixin _$UserStore on _UserStore, Store {
   @override
   String toString() {
     return '''
+token: ${token},
 id: ${id},
 email: ${email},
 password: ${password},

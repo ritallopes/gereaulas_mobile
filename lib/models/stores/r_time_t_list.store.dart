@@ -1,16 +1,27 @@
+import 'package:gereaulas_mobile/controllers/reserved_controller.dart';
 import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 
 part 'r_time_t_list.store.g.dart';
 
-class RTimeRListStore = _RTimeRListStore with _$RTimeRListStore;
+class TimeListStore = _TimeListStore with _$TimeListStore;
 
-abstract class _RTimeRListStore with Store {
+abstract class _TimeListStore with Store {
   @observable
   ObservableList<ReservedTimeTeacherStore> reservedTimeList =
-      ObservableList.of([]);
+      ObservableList<ReservedTimeTeacherStore>();
+  _TimeListStore() {
+    initTimes();
+  }
+
+  @action
+  Future<void> initTimes() async {
+    List<ReservedTimeTeacherStore> classList =
+        await ReservedController.findAll();
+    reservedTimeList.clear();
+    reservedTimeList.addAll(classList);
+  }
 
   @action
   addInitialReservedTime(Class) {}
@@ -26,17 +37,49 @@ abstract class _RTimeRListStore with Store {
 
   @action
   void addReservedTimeTeacher(
-      ReservedTime reservedTime, TeacherStore teacher, bool isOccupied) {
-    reservedTimeList.add(ReservedTimeTeacherStore(
-      reservedTime:
-          ReservedTime(start: reservedTime.start, end: reservedTime.end),
+      DateTime start, DateTime endTime, TeacherStore teacher, bool isOccupied) {
+    ReservedTimeTeacherStore newTime = ReservedTimeTeacherStore(
+      start: start,
+      endTime: endTime,
       teacher: teacher,
       isOccupied: isOccupied,
-    ));
+    );
+    if (reservedTimeList.contains(newTime)) return;
+    ReservedController.saveReservedTimeTeacher(
+            reservedTimeTeacherStore: newTime)
+        .then((value) => value != null ? reservedTimeList.add(value) : '');
+  }
+
+  @action
+  void addReservedTimeStoreTeacher(ReservedTimeTeacherStore newTime) {
+    if (reservedTimeList.contains(newTime)) return;
+    ReservedController.saveReservedTimeTeacher(
+            reservedTimeTeacherStore: newTime)
+        .then((value) => value != null ? reservedTimeList.add(value) : '');
   }
 
   @action
   void removeReservedTimeTeacher(ReservedTimeTeacherStore reservedTimeTeacher) {
     reservedTimeList.remove(reservedTimeTeacher);
+  }
+
+  @action
+  ObservableList<ReservedTimeTeacherStore> findByTeacherId(String idTeacher) {
+    List<ReservedTimeTeacherStore> filteredList = reservedTimeList
+        .where((element) => element.teacher?.id == idTeacher)
+        .toSet()
+        .toList();
+
+    return ObservableList.of(filteredList);
+  }
+
+  @action
+  ObservableList<ReservedTimeTeacherStore> findByTeacherEmail(String email) {
+    List<ReservedTimeTeacherStore> filteredList = reservedTimeList
+        .where((element) => element.teacher?.email == email)
+        .toSet()
+        .toList();
+
+    return ObservableList.of(filteredList);
   }
 }

@@ -1,7 +1,4 @@
-import 'package:gereaulas_mobile/data/dummy.dart';
-import 'package:gereaulas_mobile/models/domain/student.dart';
-import 'package:gereaulas_mobile/models/domain/teacher.dart';
-import 'package:gereaulas_mobile/models/stores/class.store.dart';
+
 /**
 Teacher getUserTeacher(String email) {
   print("email " + email);

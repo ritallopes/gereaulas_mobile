@@ -30,6 +30,7 @@ class UserController {
       }
     } catch (e) {
       print("Falha ao autenticar : " + e.toString());
+      return null;
     }
   }
 
@@ -90,8 +91,8 @@ class UserController {
       }
     } else {
       print("Falha ao buscar por email");
-      return null;
     }
+    return null;
   }
 
   static Future<UserStore?> saveUser(
@@ -118,10 +119,11 @@ class UserController {
     } catch (e) {
       print("Falha ao salvar usuário: " + e.toString());
     }
+    return null;
   }
 
 //
-///
+  ///
 ////
 /////
   static Future<UserStore?> createUser(

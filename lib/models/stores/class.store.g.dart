@@ -9,13 +9,13 @@ part of 'class.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ClassStore on _ClassStore, Store {
-  Computed<ReservedTime>? _$classTimeComputed;
+  Computed<ReservedTimeTeacherStore>? _$classTimeComputed;
 
   @override
-  ReservedTime get classTime =>
-      (_$classTimeComputed ??= Computed<ReservedTime>(() => super.classTime,
+  ReservedTimeTeacherStore get classTime => (_$classTimeComputed ??=
+          Computed<ReservedTimeTeacherStore>(() => super.classTime,
               name: '_ClassStore.classTime'))
-          .value;
+      .value;
   Computed<String>? _$classStudentComputed;
 
   @override
@@ -68,13 +68,13 @@ mixin _$ClassStore on _ClassStore, Store {
   late final _$_timeAtom = Atom(name: '_ClassStore._time', context: context);
 
   @override
-  ReservedTime get _time {
+  ReservedTimeTeacherStore get _time {
     _$_timeAtom.reportRead();
     return super._time;
   }
 
   @override
-  set _time(ReservedTime value) {
+  set _time(ReservedTimeTeacherStore value) {
     _$_timeAtom.reportWrite(value, super._time, () {
       super._time = value;
     });
@@ -195,7 +195,7 @@ mixin _$ClassStore on _ClassStore, Store {
       ActionController(name: '_ClassStore', context: context);
 
   @override
-  void setTime(ReservedTime value) {
+  void setTime(ReservedTimeTeacherStore value) {
     final _$actionInfo =
         _$_ClassStoreActionController.startAction(name: '_ClassStore.setTime');
     try {

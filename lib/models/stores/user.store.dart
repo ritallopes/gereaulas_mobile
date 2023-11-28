@@ -41,7 +41,7 @@ abstract class _UserStore with Store {
   }
 
   @action
-   void setToken(String value) {
+  void setToken(String value) {
     token = value;
   }
 
@@ -125,6 +125,16 @@ abstract class _UserStore with Store {
     type = UserType.NOTYPE;
     isAuthenticated = false;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserStore && other.id == id && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
 
   @computed
   bool get isFieldLoginFilled {

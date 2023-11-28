@@ -1,9 +1,12 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
+import 'package:gereaulas_mobile/components/student_dropdown.dart';
 
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/student.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
@@ -31,6 +34,7 @@ class _AddClassPageState extends State<AddClassPage> {
   @override
   void initState() {
     residentialIsChecked = true;
+    students = [];
     formData = Map<String, Object>();
     super.initState();
   }
@@ -38,7 +42,6 @@ class _AddClassPageState extends State<AddClassPage> {
   final _residentialFocus = FocusNode();
   final _paymentAmountFocus = FocusNode();
   final _subjectFocus = FocusNode();
-  final _studentFocus = FocusNode();
 
   final _submitFocus = FocusNode();
 
@@ -49,11 +52,13 @@ class _AddClassPageState extends State<AddClassPage> {
   TimeOfDay time_end = TimeOfDay.now();
 
   void submit() {
-    ReservedTime time = ReservedTime(
+    ReservedTimeTeacherStore time = ReservedTimeTeacherStore(
         start: DateTime(date_init.year, date_init.month, date_init.day,
             time_init.hour, time_init.minute),
-        end: DateTime(date_end.year, date_end.month, date_end.day,
-            time_end.hour, time_end.minute));
+        endTime: DateTime(date_end.year, date_end.month, date_end.day,
+            time_end.hour, time_end.minute),
+        teacher: teacher,
+        isOccupied: true);
     formData['time'] = time;
     classListStore.addClassFromFields(
       time: time,
@@ -70,18 +75,20 @@ class _AddClassPageState extends State<AddClassPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     userStore = Provider.of<UserStore>(context);
     students = Provider.of<StudentListStore>(context).students.toList();
 
     classListStore = Provider.of<ClassListStore>(context);
     teacher = Provider.of<TeacherStore>(context);
-
     formData['teacher'] = teacher;
-    //TODO
     formData['status'] = 'notStarted';
     formData['residential'] = true;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     _showDateInitPicker() {
       showDatePicker(
               context: context,
@@ -210,7 +217,7 @@ class _AddClassPageState extends State<AddClassPage> {
             ),
             Row(
               children: <Widget>[
-                Spacer(flex: 1),
+                const Spacer(flex: 1),
                 Expanded(
                   flex: 2,
                   child: Text(
@@ -244,35 +251,20 @@ class _AddClassPageState extends State<AddClassPage> {
               ],
             ),
             const Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
             ),
-
-            //Estudante dropdown
-            DropdownButtonFormField(
-              value: formData['student']?.toString(),
-              focusNode: _studentFocus,
-              hint: Text(formData.containsKey('student')
-                  ? ((formData['student']) as StudentStore).name
-                  : "Selecione o estudante"),
-              items: students
-                  .map((e) => DropdownMenuItem(
-                      child: Text(e.name.toString()), value: e))
-                  .toList(),
-              onChanged: (student) => formData['student'] = student ?? '',
-              validator: (_student) {
-                final student = _student ?? '';
-
-                if ((student as StudentStore).email != '') {
-                  return 'Obrigatório';
-                }
-
-                return null;
-              },
-              decoration: const InputDecoration(
-                labelText: 'Estudante',
-              ),
-              onSaved: (student) => formData['student'] = student ?? '',
-            ),
+            students.isNotEmpty
+                ? StudentDropdown(
+                    students: students,
+                    selectedStudent: formData['student'] as StudentStore?,
+                    onChanged: (student) {
+                      if (student == null) return;
+                      setState(() {
+                        formData['student'] = student;
+                      });
+                    },
+                  )
+                : const Center(),
             TextFormField(
               initialValue: formData['subject']?.toString(),
               decoration: const InputDecoration(
@@ -281,7 +273,7 @@ class _AddClassPageState extends State<AddClassPage> {
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               focusNode: _subjectFocus,
-              onChanged: (subject) => formData['subject'] = subject ?? '',
+              onChanged: (subject) => formData['subject'] = subject,
               onFieldSubmitted: (_) {
                 FocusScope.of(context).requestFocus(_paymentAmountFocus);
               },
@@ -309,7 +301,7 @@ class _AddClassPageState extends State<AddClassPage> {
               onSaved: (paymentAmount) =>
                   formData['paymentAmount'] = paymentAmount ?? '',
               onChanged: (paymentAmount) =>
-                  formData['paymentAmount'] = paymentAmount ?? '',
+                  formData['paymentAmount'] = paymentAmount,
               validator: (_paymentAmount) {
                 final paymentAmount = _paymentAmount ?? '';
 
@@ -330,6 +322,9 @@ class _AddClassPageState extends State<AddClassPage> {
                     onChanged: (residential) {
                       formData['residential'] = residential ?? '';
                       setState(() {
+                        print(
+                            'Valor de students após a modificação: $students');
+
                         residentialIsChecked = residential ?? false;
                       });
                     },
@@ -351,7 +346,7 @@ class _AddClassPageState extends State<AddClassPage> {
                     },
                     onSaved: (address) => formData['address'] = address ?? '',
                   )
-                : Center(),
+                : const Center(),
             SizedBox(
               width: 200,
               height: 50,

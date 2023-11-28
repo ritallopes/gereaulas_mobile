@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
+import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/student.store.dart';
 import 'package:provider/provider.dart';
 
@@ -31,14 +32,14 @@ class _StudentItemState extends State<StudentItem> {
 
 class CardItem extends StatelessWidget {
   late StudentStore item;
-  late ResponsibleStore responsibleStore;
+  late ResponsibleListStore responsibleListStore;
   CardItem(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    responsibleStore = Provider.of<ResponsibleStore>(context);
-    print("Name " + responsibleStore.name);
-
+    responsibleListStore = Provider.of<ResponsibleListStore>(context);
+    ResponsibleStore responsible =
+        responsibleListStore.findById(item.idResponsible ?? '');
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +94,9 @@ class CardItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            responsibleStore.name ?? 'Sem responsável cadastrado',
+            responsible.id != ''
+                ? responsible.name
+                : 'Sem responsável cadastrado',
             style: const TextStyle(
                 decoration: TextDecoration.none,
                 fontSize: 12,

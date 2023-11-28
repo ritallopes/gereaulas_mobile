@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:provider/provider.dart';
 
 class CloneDialog extends StatefulWidget {
@@ -13,6 +15,7 @@ class CloneDialog extends StatefulWidget {
 
 class _CloneDialogState extends State<CloneDialog> {
   late ClassStore newClass;
+  late TeacherStore teacherStore;
   late ClassListStore classListStore;
   late Map<String, Object> formData = {};
   DateTime date_init = DateTime.now();
@@ -24,19 +27,21 @@ class _CloneDialogState extends State<CloneDialog> {
   @override
   void initState() {
     date_init = widget.itemSource.classTime.start;
-    date_end = widget.itemSource.classTime.end;
+    date_end = widget.itemSource.classTime.endTime;
 
     time_init = TimeOfDay.fromDateTime(widget.itemSource.classTime.start);
-    time_end = TimeOfDay.fromDateTime(widget.itemSource.classTime.end);
+    time_end = TimeOfDay.fromDateTime(widget.itemSource.classTime.endTime);
     super.initState();
   }
 
   submitClone() {
-    ReservedTime time = ReservedTime(
+    ReservedTimeTeacherStore time = ReservedTimeTeacherStore(
         start: DateTime(date_init.year, date_init.month, date_init.day,
             time_init.hour, time_init.minute),
-        end: DateTime(date_end.year, date_end.month, date_end.day,
-            time_end.hour, time_end.minute));
+        endTime: DateTime(date_end.year, date_end.month, date_end.day,
+            time_end.hour, time_end.minute),
+        teacher: teacherStore,
+        isOccupied: true);
     formData['time'] = time;
 
     classListStore.createClassFormData(formData);
@@ -47,10 +52,11 @@ class _CloneDialogState extends State<CloneDialog> {
   @override
   Widget build(BuildContext context) {
     classListStore = Provider.of<ClassListStore>(context, listen: false);
+    teacherStore = Provider.of<TeacherStore>(context, listen: false);
     formData['student'] = widget.itemSource.classStudent;
     formData['residential'] = widget.itemSource.isResidential;
     formData['subject'] = widget.itemSource.classSubject;
-    formData['teacher'] = widget.itemSource.classTeacher;
+    formData['teacher'] = teacherStore;
     formData['status'] = 'notStarted';
     formData['paymentAmount'] = widget.itemSource.classPaymentAmount;
 

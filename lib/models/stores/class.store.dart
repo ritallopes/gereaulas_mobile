@@ -1,6 +1,4 @@
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/stores/student.store.dart';
-import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 import 'package:mobx/mobx.dart';
 part 'class.store.g.dart';
 
@@ -8,12 +6,13 @@ class ClassStore = _ClassStore with _$ClassStore;
 
 abstract class _ClassStore with Store {
   @observable
-  ReservedTime _time = ReservedTime(start: DateTime.now(), end: DateTime.now());
+  ReservedTimeTeacherStore _time =
+      ReservedTimeTeacherStore(start: DateTime.now(), endTime: DateTime.now());
 
-  ReservedTime get time => _time;
+  ReservedTimeTeacherStore get time => _time;
 
   @action
-  void setTime(ReservedTime value) {
+  void setTime(ReservedTimeTeacherStore value) {
     _time = value;
   }
 
@@ -87,7 +86,7 @@ abstract class _ClassStore with Store {
   }
 
   @computed
-  ReservedTime get classTime => time;
+  ReservedTimeTeacherStore get classTime => time;
 
   @computed
   String get classStudent => student;

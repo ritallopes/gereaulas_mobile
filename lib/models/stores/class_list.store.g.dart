@@ -66,7 +66,7 @@ mixin _$ClassListStore on _ClassListStore, Store {
 
   @override
   void addClassFromFields(
-      {required ReservedTime time,
+      {required ReservedTimeTeacherStore time,
       required StudentStore student,
       required TeacherStore teacher,
       String status = 'notStarted',
@@ -123,7 +123,8 @@ mixin _$ClassListStore on _ClassListStore, Store {
   }
 
   @override
-  void cloneClass(ClassStore classSource, ReservedTime time, String subject) {
+  void cloneClass(
+      ClassStore classSource, ReservedTimeTeacherStore time, String subject) {
     final _$actionInfo = _$_ClassListStoreActionController.startAction(
         name: '_ClassListStore.cloneClass');
     try {

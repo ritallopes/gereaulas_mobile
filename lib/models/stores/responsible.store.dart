@@ -1,4 +1,3 @@
-import 'package:gereaulas_mobile/controllers/responsible_controller.dart';
 import 'package:mobx/mobx.dart';
 part 'responsible.store.g.dart';
 

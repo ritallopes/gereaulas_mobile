@@ -50,6 +50,21 @@ abstract class _StudentListStore with Store {
   }
 
   @action
+  List<StudentStore> getUniqueStudents() {
+    Set<String> uniqueStudentIds = {};
+    List<StudentStore> uniqueStudents = [];
+
+    for (var student in students) {
+      if (!uniqueStudentIds.contains(student.id)) {
+        uniqueStudentIds.add(student.id);
+        uniqueStudents.add(student);
+      }
+    }
+
+    return uniqueStudents;
+  }
+
+  @action
   StudentStore findById(String id) {
     StudentStore student = students.where((e) => e.id == id).first;
 

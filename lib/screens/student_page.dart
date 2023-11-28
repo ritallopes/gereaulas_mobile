@@ -3,7 +3,6 @@ import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
 import 'package:gereaulas_mobile/components/student_item.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
-import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
 import 'package:gereaulas_mobile/models/stores/student_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:provider/provider.dart';
