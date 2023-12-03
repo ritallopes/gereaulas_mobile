@@ -68,6 +68,16 @@ abstract class _ClassStore with Store {
   @observable
   String _subject = '';
 
+  @observable
+  String _address = '';
+
+  @action
+  void setAddress(String value) {
+    _address = value;
+  }
+
+  String get address => _address;
+
   String get subject => _subject;
 
   @action
@@ -111,6 +121,7 @@ abstract class _ClassStore with Store {
 
   @action
   void changeStatus(String newStatus) {
+    //TODO updates
     _status = newStatus;
   }
 
@@ -123,6 +134,7 @@ abstract class _ClassStore with Store {
         'residential: $residential, '
         'paymentAmount: $paymentAmount, '
         'subject: $subject, '
-        'status: $status}';
+        'status: $status, '
+        'address: $_address}';
   }
 }

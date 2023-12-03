@@ -36,6 +36,7 @@ abstract class _ClassListStore with Store {
     required StudentStore student,
     required TeacherStore teacher,
     String status = 'notStarted',
+    String address = '',
     required bool residential,
     required double paymentAmount,
     required String subject,
@@ -47,6 +48,7 @@ abstract class _ClassListStore with Store {
       ..setStatus(status)
       ..setResidential(residential)
       ..setPaymentAmount(paymentAmount)
+      ..setAddress(residential ? student.address : address)
       ..setSubject(subject);
     ReservedController.saveReservedTimeTeacher(reservedTimeTeacherStore: time)
         .then((value) {
@@ -63,10 +65,13 @@ abstract class _ClassListStore with Store {
     newClass.setStudent(formData['student'].toString());
     newClass.setTeacher((formData['teacher'] as TeacherStore).id);
     newClass.setStatus('notStarted');
+
     newClass.setResidential(formData['residential'] as bool);
     newClass
         .setPaymentAmount(double.parse(formData['paymentAmount'].toString()));
     newClass.setSubject(formData['subject'].toString());
+    newClass.setAddress(formData['address'] as String);
+
     ClassController.createClass(newClass);
     allClass.add(newClass);
   }

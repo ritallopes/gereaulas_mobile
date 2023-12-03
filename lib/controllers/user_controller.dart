@@ -18,7 +18,7 @@ class UserController {
         body: json.encode({'email': email, 'password': password}),
       );
 
-      print("\n RESPONSE: " + response.statusCode.toString());
+      print("\n RESPONSE: " + response.body + " - " + email + " " + password);
       if (response.statusCode == 200) {
         String token = response.body;
         tokenUser = token;

@@ -175,6 +175,22 @@ mixin _$ClassStore on _ClassStore, Store {
     });
   }
 
+  late final _$_addressAtom =
+      Atom(name: '_ClassStore._address', context: context);
+
+  @override
+  String get _address {
+    _$_addressAtom.reportRead();
+    return super._address;
+  }
+
+  @override
+  set _address(String value) {
+    _$_addressAtom.reportWrite(value, super._address, () {
+      super._address = value;
+    });
+  }
+
   late final _$_statusAtom =
       Atom(name: '_ClassStore._status', context: context);
 
@@ -255,6 +271,17 @@ mixin _$ClassStore on _ClassStore, Store {
         _$_ClassStoreActionController.startAction(name: '_ClassStore.setId');
     try {
       return super.setId(value);
+    } finally {
+      _$_ClassStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setAddress(String value) {
+    final _$actionInfo = _$_ClassStoreActionController.startAction(
+        name: '_ClassStore.setAddress');
+    try {
+      return super.setAddress(value);
     } finally {
       _$_ClassStoreActionController.endAction(_$actionInfo);
     }

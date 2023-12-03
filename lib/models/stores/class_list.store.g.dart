@@ -70,6 +70,7 @@ mixin _$ClassListStore on _ClassListStore, Store {
       required StudentStore student,
       required TeacherStore teacher,
       String status = 'notStarted',
+      String address = '',
       required bool residential,
       required double paymentAmount,
       required String subject}) {
@@ -81,6 +82,7 @@ mixin _$ClassListStore on _ClassListStore, Store {
           student: student,
           teacher: teacher,
           status: status,
+          address: address,
           residential: residential,
           paymentAmount: paymentAmount,
           subject: subject);

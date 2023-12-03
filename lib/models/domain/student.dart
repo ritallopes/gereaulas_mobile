@@ -1,4 +1,4 @@
-import 'package:gereaulas_mobile/models/domain/responsible.dart';
+import 'package:gereaulas_mobile/screens/responsible.dart';
 
 class Student {
   String email;

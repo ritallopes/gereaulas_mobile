@@ -10,5 +10,7 @@ class Routes {
 }
 
 const API_PATH = 'https://gereaulas-default-rtdb.firebaseio.com';
-const API_LOCAL = 'http://127.0.0.1:8081';
+const API_LOCAL = 'https://api-gereaulas.onrender.com';
+const GOOGLE_API_KEY = 'AIzaSyAsm8Y-vGt5sdDIJAF-bpg77XXwTcFRZpQ';
+
 

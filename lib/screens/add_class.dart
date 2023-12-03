@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/components/app_bar.dart';
 import 'package:gereaulas_mobile/components/drawer_nav.dart';
+import 'package:gereaulas_mobile/components/location_input.dart';
 import 'package:gereaulas_mobile/components/student_dropdown.dart';
+import 'package:gereaulas_mobile/models/domain/place.dart';
 
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
@@ -67,6 +69,7 @@ class _AddClassPageState extends State<AddClassPage> {
       residential: formData['residential'] as bool,
       paymentAmount: double.parse(formData['paymentAmount'].toString()),
       subject: formData['subject'].toString(),
+      address: formData['address'].toString(),
     );
     Navigator.push(
       context,
@@ -85,6 +88,10 @@ class _AddClassPageState extends State<AddClassPage> {
     formData['teacher'] = teacher;
     formData['status'] = 'notStarted';
     formData['residential'] = true;
+  }
+
+  void onLocationSelected(Place place) {
+    formData['address'] = place.address;
   }
 
   @override
@@ -264,7 +271,7 @@ class _AddClassPageState extends State<AddClassPage> {
                       });
                     },
                   )
-                : const Center(),
+                : const Text("Não há estudantes cadastrados"),
             TextFormField(
               initialValue: formData['subject']?.toString(),
               decoration: const InputDecoration(
@@ -329,23 +336,12 @@ class _AddClassPageState extends State<AddClassPage> {
                       });
                     },
                   ),
-                  const Text("A aula acontecerá no endereço do aluno")
+                  const Text("A aula será no endereço do aluno")
                 ],
               ),
             ),
             !residentialIsChecked
-                ? TextFormField(
-                    initialValue: formData['address']?.toString(),
-                    decoration: const InputDecoration(
-                      labelText: 'Endereço',
-                    ),
-                    keyboardType: TextInputType.streetAddress,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) {
-                      FocusScope.of(context).requestFocus(_submitFocus);
-                    },
-                    onSaved: (address) => formData['address'] = address ?? '',
-                  )
+                ? LocationInput(onLocationSelected: onLocationSelected)
                 : const Center(),
             SizedBox(
               width: 200,
