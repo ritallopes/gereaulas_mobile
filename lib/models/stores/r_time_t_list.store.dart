@@ -51,11 +51,21 @@ abstract class _TimeListStore with Store {
   }
 
   @action
-  void addReservedTimeStoreTeacher(ReservedTimeTeacherStore newTime) {
-    if (reservedTimeList.contains(newTime)) return;
-    ReservedController.saveReservedTimeTeacher(
+  Future<ReservedTimeTeacherStore?> addReservedTimeStoreTeacher(
+      ReservedTimeTeacherStore newTime) async {
+    if (reservedTimeList.contains(newTime)) {
+      return null;
+    }
+
+    return ReservedController.saveReservedTimeTeacher(
             reservedTimeTeacherStore: newTime)
-        .then((value) => value != null ? reservedTimeList.add(value) : '');
+        .then((value) {
+      print(value);
+      if (value != null) {
+        reservedTimeList.add(newTime);
+      }
+      return value;
+    });
   }
 
   @action

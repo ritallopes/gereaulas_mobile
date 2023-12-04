@@ -34,7 +34,11 @@ dependencies:
   flutter_native_splash: ^2.3.2
   http: ^1.1.0
   google_maps_flutter: ^2.5.0
-  location: ^5.0.3
+  location:
+    git:
+      url: https://github.com/781flyingdutchman/flutterlocation.git
+      ref: V4
+      path: packages/location
   url_launcher: ^6.2.1
   firebase_auth: ^4.14.1
   geocoding: ^2.1.1
@@ -50,6 +54,7 @@ dependencies:
   sqflite: ^2.3.0
   path_provider_android: ^2.2.1
   path_provider_ios: ^2.0.11
+  connectivity: ^3.0.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

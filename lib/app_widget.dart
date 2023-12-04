@@ -33,12 +33,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final dbHelper = DatabaseHelper.instance;
-
   @override
   void initState() {
     super.initState();
-    print(dbHelper.database);
   }
 
   @override

@@ -34,8 +34,8 @@ class ReservedController {
           'teacher': {"id": teacherStore?.id.toString()},
         }),
       );
-
-      if (response.statusCode == 200) {
+      print(response.statusCode);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
         final Map<String, dynamic> data = json.decode(response.body);
         if (data.isNotEmpty) {
           print(createReservedTimeTeacherByJson(data));

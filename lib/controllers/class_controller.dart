@@ -32,6 +32,7 @@ class ClassController {
         "paymentAmount": classData.paymentAmount.toString(),
         "subject": classData.subject.toString(),
         "status": classData.status.toString(),
+        "address": classData.address.toString(),
       };
       final response = await http.post(Uri.parse('$API_LOCAL/classes'),
           body: json.encode(bodyObj),

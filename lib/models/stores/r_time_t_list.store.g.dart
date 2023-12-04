@@ -33,6 +33,17 @@ mixin _$TimeListStore on _TimeListStore, Store {
     return _$initTimesAsyncAction.run(() => super.initTimes());
   }
 
+  late final _$addReservedTimeStoreTeacherAsyncAction = AsyncAction(
+      '_TimeListStore.addReservedTimeStoreTeacher',
+      context: context);
+
+  @override
+  Future<ReservedTimeTeacherStore?> addReservedTimeStoreTeacher(
+      ReservedTimeTeacherStore newTime) {
+    return _$addReservedTimeStoreTeacherAsyncAction
+        .run(() => super.addReservedTimeStoreTeacher(newTime));
+  }
+
   late final _$_TimeListStoreActionController =
       ActionController(name: '_TimeListStore', context: context);
 
@@ -65,17 +76,6 @@ mixin _$TimeListStore on _TimeListStore, Store {
         name: '_TimeListStore.addReservedTimeTeacher');
     try {
       return super.addReservedTimeTeacher(start, endTime, teacher, isOccupied);
-    } finally {
-      _$_TimeListStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void addReservedTimeStoreTeacher(ReservedTimeTeacherStore newTime) {
-    final _$actionInfo = _$_TimeListStoreActionController.startAction(
-        name: '_TimeListStore.addReservedTimeStoreTeacher');
-    try {
-      return super.addReservedTimeStoreTeacher(newTime);
     } finally {
       _$_TimeListStoreActionController.endAction(_$actionInfo);
     }

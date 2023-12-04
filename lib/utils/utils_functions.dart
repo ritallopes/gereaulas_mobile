@@ -1,4 +1,5 @@
 import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 
 int differenceBetweenDate(DateTime d1, DateTime d2) {
@@ -29,4 +30,13 @@ class LocationUtil {
 
     return "Address";
   }
+}
+
+void launchPhone(String? phoneNumber) async {
+  if (phoneNumber == null) return;
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: phoneNumber,
+  );
+  await launchUrl(launchUri);
 }

@@ -4,15 +4,39 @@ import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class TeacherController {
   TeacherController();
+
+  static Future<String> saveImageToFile(File imageFile, String fileName) async {
+    try {
+      // Obter o diretório de documentos do aplicativo
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+
+      // Construir o caminho completo para o arquivo
+      String imagePath = '$appDocPath/$fileName';
+
+      // Salvar a imagem no arquivo
+      await imageFile.copy(imagePath);
+
+      // Retornar o caminho do arquivo salvo
+      return imagePath;
+    } catch (e) {
+      // Lidar com qualquer erro que possa ocorrer durante o processo
+      print('Erro ao salvar a imagem: $e');
+      return ''; // Retornar uma string vazia em caso de erro
+    }
+  }
 
   static Future<TeacherStore?> saveTeacher(
     String name,
     String email,
     String image_profile,
   ) async {
+    
     try {
       final response = await http.post(Uri.parse('$API_LOCAL/teachers'),
           headers: {
@@ -20,7 +44,7 @@ class TeacherController {
           },
           body: json.encode(
               {'name': name, 'email': email, 'image_profile': image_profile}));
-      print({'name': name, 'email': email, 'image_profile': image_profile});
+      print({'name': name, 'email': email, 'imageProfile': image_profile});
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -44,7 +68,7 @@ class TeacherController {
       teacherStore.setId(json['id'].toString());
       teacherStore.setEmail(json['email'].toString());
       teacherStore.setName(json['name'].toString());
-      teacherStore.setImageProfile(json['image_profile'].toString());
+      teacherStore.setImageProfile(json['imageProfile'].toString());
       return teacherStore;
     } catch (e) {
       print("Erro ao criar o professor a partir do Map: $e");
@@ -100,7 +124,8 @@ class TeacherController {
       teacherStore.setId(id);
       teacherStore.setEmail(json['email'] ?? '');
       teacherStore.setName(json['name'] ?? '');
-      teacherStore.setImageProfile(json['image_profile'] ?? '');
+      teacherStore
+          .setImageProfile(json['imageProfile'] ?? json['image_profile'] ?? '');
 
       return teacherStore;
     } catch (e) {

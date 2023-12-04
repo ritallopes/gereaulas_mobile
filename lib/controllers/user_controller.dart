@@ -9,6 +9,7 @@ class UserController {
 
   static String tokenUser = '';
   static Future<UserStore?> auth(String email, String password) async {
+    print("Login");
     try {
       final response = await http.post(
         Uri.parse('$API_LOCAL/login'),
@@ -19,7 +20,7 @@ class UserController {
       );
 
       print("\n RESPONSE: " + response.body + " - " + email + " " + password);
-      if (response.statusCode == 200) {
+      if (response.statusCode < 300 && response.statusCode >= 200) {
         String token = response.body;
         tokenUser = token;
         return findByEmail(email, token);

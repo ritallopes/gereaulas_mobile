@@ -74,8 +74,14 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  _submitLogin() {
-    userStore.auth(userStore.email, userStore.password).then((loginSuccess) {
+  _submitLogin() async {
+    print(userStore.isAuthenticated);
+
+    await userStore
+        .auth(userStore.email, userStore.password)
+        .then((loginSuccess) {
+      print(loginSuccess);
+      print(userStore.isAuthenticated);
       _emailController.clear();
       _passwordController.clear();
       if (userStore.isAuthenticated) {

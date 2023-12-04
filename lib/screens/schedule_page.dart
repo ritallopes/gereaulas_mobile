@@ -23,6 +23,7 @@ class _SchedulePageState extends State<SchedulePage> {
   late TeacherStore teacherStore;
 
   late TimeListStore rTimeRListStore;
+  late List<ReservedTimeTeacherStore> timesList;
 
   final _dateFormat = DateFormat('dd/MM/yyyy');
   final _timeFormat = DateFormat('HH:mm');
@@ -50,11 +51,22 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  void saveSchedule(ReservedTimeTeacherStore reserved) {
+    rTimeRListStore.addReservedTimeStoreTeacher(reserved).then((value) {
+      setState(() {
+        timesList = ObservableList.of(
+            rTimeRListStore.findByTeacherEmail(userStore.email));
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     userStore = Provider.of<UserStore>(context);
     rTimeRListStore = Provider.of<TimeListStore>(context);
     teacherStore = Provider.of<TeacherStore>(context);
+    timesList =
+        ObservableList.of(rTimeRListStore.findByTeacherEmail(userStore.email));
 
     setNewReservedTime(userStore.email);
 
@@ -211,41 +223,32 @@ class _SchedulePageState extends State<SchedulePage> {
             const SizedBox(height: 20),
             const Text('Horários:',
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            Observer(builder: (_) {
-              var timesList = ObservableList.of(
-                  rTimeRListStore.findByTeacherEmail(userStore.email));
-
-              return timesList.isNotEmpty
-                  ? Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(8.0),
-                        shrinkWrap: true,
-                        itemCount: timesList.length,
-                        itemBuilder: (context, index) {
-                          var scheduledTime = timesList[index];
-                          return ScheduleItem(scheduledTime);
-                        },
-                      ),
-                    )
-                  : const Center(
-                      child: Text(
-                        "Você não tem horários agendados",
-                        style: TextStyle(
-                            decoration: TextDecoration.none,
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    );
-            }),
+            timesList.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      itemCount: timesList.length,
+                      itemBuilder: (context, index) {
+                        var scheduledTime = timesList[index];
+                        return ScheduleItem(scheduledTime);
+                      },
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      "Você não tem horários agendados",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  )
           ],
         ),
       ),
     );
-  }
-
-  void saveSchedule(ReservedTimeTeacherStore reserved) {
-    rTimeRListStore.addReservedTimeStoreTeacher(reserved);
   }
 
   void _selectStartDate() async {

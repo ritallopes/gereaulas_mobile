@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/components/image_upload.dart';
 import 'package:gereaulas_mobile/components/register_student.dart';
@@ -35,8 +35,19 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
 
   File? _pickedImage;
 
-  void _selectImage(File? pickedImage) {
+  void _selectImage(File? pickedImage) async {
     _pickedImage = pickedImage;
+    if (_pickedImage != null) return;
+    String fileName = '${_formData['name']}.jpg'; // Nome do arquivo desejado
+
+    String savedImagePath = await TeacherController.saveImageToFile(
+        _pickedImage ?? File.fromUri(Uri.dataFromString(fileName)), fileName);
+
+    if (savedImagePath.isNotEmpty) {
+      print('Imagem salva com sucesso em: $savedImagePath');
+    } else {
+      print('Erro ao salvar a imagem.');
+    }
   }
 
   void _submitRegister() {

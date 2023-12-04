@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
 import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/student.store.dart';
+import 'package:gereaulas_mobile/utils/utils_functions.dart';
 import 'package:provider/provider.dart';
 
 class StudentItem extends StatefulWidget {
@@ -113,13 +114,16 @@ class CardItem extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            item?.contact ?? 'Sem contato cadastrado',
-            style: const TextStyle(
-                decoration: TextDecoration.none,
-                fontSize: 12,
-                color: Colors.black,
-                fontWeight: FontWeight.w400),
+          child: GestureDetector(
+            onTap: (() => launchPhone(item?.contact)),
+            child: Text(
+              item?.contact ?? 'Sem contato cadastrado',
+              style: const TextStyle(
+                  decoration: TextDecoration.none,
+                  fontSize: 12,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400),
+            ),
           ),
         )
       ]),

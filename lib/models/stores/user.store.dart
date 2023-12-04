@@ -69,7 +69,7 @@ abstract class _UserStore with Store {
   @action
   Future<bool> auth(String email, String password) async {
     try {
-      UserController.auth(email, password).then((value) {
+      await UserController.auth(email, password).then((value) {
         if (value != null) {
           this.email = value.email;
           this.password = value.password;
