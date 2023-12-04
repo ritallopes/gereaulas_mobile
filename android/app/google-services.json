@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616787701899",
+    "project_id": "gereaulas-push",
+    "storage_bucket": "gereaulas-push.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616787701899:android:04dcbe720b0773a520e48e",
+        "android_client_info": {
+          "package_name": "com.example.gereaulas_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd2JZZmsKiSC5AR1_Ubq4DvLzyZrdrA_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

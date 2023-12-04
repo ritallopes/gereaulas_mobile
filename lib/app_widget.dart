@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gereaulas_mobile/database/db_helper.dart';
-import 'package:gereaulas_mobile/database/images_db.dart';
-import 'package:gereaulas_mobile/database/reserved_time_db.dart';
-import 'package:gereaulas_mobile/database/teachers_db.dart';
-import 'package:gereaulas_mobile/database/users_db.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
@@ -16,7 +13,6 @@ import 'package:gereaulas_mobile/screens/class_page.dart';
 import 'package:gereaulas_mobile/screens/home_teacher.dart';
 import 'package:gereaulas_mobile/screens/login_page.dart';
 import 'package:gereaulas_mobile/screens/main_page.dart';
-import 'package:gereaulas_mobile/screens/profile.dart';
 import 'package:gereaulas_mobile/screens/register_users.dart';
 import 'package:gereaulas_mobile/screens/schedule_page.dart';
 import 'package:gereaulas_mobile/screens/student_page.dart';
@@ -34,9 +30,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   @override
   void initState() {
     super.initState();
+    _firebaseMessaging.requestPermission();
+    final fCMToken = _firebaseMessaging.getToken();
+    print(fCMToken);
   }
 
   @override

@@ -52,6 +52,7 @@ dependencies:
   path_provider: ^2.0.15
   path: ^1.8.3
   sqflite: ^2.3.0
+  flutter_local_notifications: ^16.2.0
   path_provider_android: ^2.2.1
   path_provider_ios: ^2.0.11
   connectivity: ^3.0.6
