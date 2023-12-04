@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gereaulas_mobile/database/db_helper.dart';
+import 'package:gereaulas_mobile/database/images_db.dart';
+import 'package:gereaulas_mobile/database/reserved_time_db.dart';
+import 'package:gereaulas_mobile/database/teachers_db.dart';
+import 'package:gereaulas_mobile/database/users_db.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/r_time_t_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/responsible_list.store.dart';
@@ -18,6 +23,8 @@ import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:gereaulas_mobile/utils/theme/theme_app.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter/widgets.dart';
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -26,9 +33,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final dbHelper = DatabaseHelper.instance;
+
   @override
   void initState() {
     super.initState();
+    print(dbHelper.database);
   }
 
   @override
