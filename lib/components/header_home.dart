@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/screens/profile.dart';
 import 'package:provider/provider.dart';
 
 class HeaderHome extends StatelessWidget {
@@ -18,11 +19,19 @@ class HeaderHome extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: SizedBox(
-              height: 100,
-              width: 100,
-              child: Image.asset(
-                "assets/images/example_profile.png",
+            child: GestureDetector(
+              onTap: (() => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProfilePage(teacherStore: teacher)),
+                  )),
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Image.asset(
+                  "assets/images/example_profile.png",
+                ),
               ),
             ),
           ),

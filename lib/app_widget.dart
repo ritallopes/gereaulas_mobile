@@ -16,6 +16,7 @@ import 'package:gereaulas_mobile/screens/class_page.dart';
 import 'package:gereaulas_mobile/screens/home_teacher.dart';
 import 'package:gereaulas_mobile/screens/login_page.dart';
 import 'package:gereaulas_mobile/screens/main_page.dart';
+import 'package:gereaulas_mobile/screens/profile.dart';
 import 'package:gereaulas_mobile/screens/register_users.dart';
 import 'package:gereaulas_mobile/screens/schedule_page.dart';
 import 'package:gereaulas_mobile/screens/student_page.dart';

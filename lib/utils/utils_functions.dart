@@ -40,3 +40,13 @@ void launchPhone(String? phoneNumber) async {
   );
   await launchUrl(launchUri);
 }
+
+void launchEmail(String email) async {
+  final Uri _emailLaunchUri = Uri(scheme: 'mailto', path: email);
+
+  if (await canLaunch(_emailLaunchUri.toString())) {
+    await launch(_emailLaunchUri.toString());
+  } else {
+    throw 'Não foi possível abrir o cliente de e-mail.';
+  }
+}

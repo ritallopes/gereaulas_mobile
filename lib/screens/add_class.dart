@@ -159,199 +159,201 @@ class _AddClassPageState extends State<AddClassPage> {
     return Scaffold(
       appBar: AppBarCustom(pageTitle: "Marcar aula"),
       drawer: MainDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Defina o Horário'),
-                ),
-              ],
-            ),
-            const Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Início'),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                const Spacer(flex: 1),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                      '${date_init.day}/${date_init.month}/${date_init.year}'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    onPressed: _showDateInitPicker,
-                    child: const Icon(
-                      Icons.calendar_today,
-                      size: 24.0,
-                      semanticLabel: 'Definir Início',
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text('Defina o Horário'),
                   ),
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                const Spacer(flex: 1),
-                Expanded(
-                  flex: 2,
-                  child: Text('${time_init.hour}:${time_init.minute}'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    onPressed: _showTimeInitPicker,
-                    child: const Icon(Icons.lock_clock,
-                        size: 24.0, semanticLabel: 'Definir Início'),
-                  ),
-                )
-              ],
-            ),
-            const Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text('Final'),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                const Spacer(flex: 1),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                      '${date_end.day}/${date_end.month}/${date_end.year}'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    onPressed: _showDateEndPicker,
-                    child: const Icon(Icons.calendar_today,
-                        size: 24.0, semanticLabel: 'Definir Final'),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                const Spacer(flex: 1),
-                Expanded(
-                  flex: 2,
-                  child: Text('${time_end.hour}:${time_end.minute}'),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: TextButton(
-                    onPressed: _showTimeEndPicker,
-                    child: const Icon(Icons.lock_clock,
-                        size: 24.0, semanticLabel: 'Definir Horário final'),
-                  ),
-                )
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            students.isNotEmpty
-                ? StudentDropdown(
-                    students: students,
-                    selectedStudent: formData['student'] as StudentStore?,
-                    onChanged: (student) {
-                      if (student == null) return;
-                      setState(() {
-                        formData['student'] = student;
-                      });
-                    },
-                  )
-                : const Text("Não há estudantes cadastrados"),
-            TextFormField(
-              initialValue: formData['subject']?.toString(),
-              decoration: const InputDecoration(
-                labelText: 'Assunto',
-              ),
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
-              focusNode: _subjectFocus,
-              onChanged: (subject) => formData['subject'] = subject,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_paymentAmountFocus);
-              },
-              onSaved: (subject) => formData['subject'] = subject ?? '',
-              validator: (_subject) {
-                final subject = _subject ?? '';
-
-                if (subject.trim().isEmpty) {
-                  return 'Obrigatório';
-                }
-
-                return null;
-              },
-            ),
-            TextFormField(
-              initialValue: formData['paymentAmount']?.toString(),
-              decoration: const InputDecoration(
-                labelText: 'Valor da aula R\$',
-              ),
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_residentialFocus);
-              },
-              onSaved: (paymentAmount) =>
-                  formData['paymentAmount'] = paymentAmount ?? '',
-              onChanged: (paymentAmount) =>
-                  formData['paymentAmount'] = paymentAmount,
-              validator: (_paymentAmount) {
-                final paymentAmount = _paymentAmount ?? '';
-
-                if (paymentAmount.trim().isEmpty) {
-                  return 'Obrigatório';
-                }
-
-                return null;
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10.0, 0.0, 5.0),
-              child: Row(
-                children: [
-                  Checkbox(
-                    focusNode: _residentialFocus,
-                    value: residentialIsChecked,
-                    onChanged: (residential) {
-                      formData['residential'] = residential ?? '';
-                      setState(() {
-                        print(
-                            'Valor de students após a modificação: $students');
-
-                        residentialIsChecked = residential ?? false;
-                      });
-                    },
-                  ),
-                  const Text("A aula será no endereço do aluno")
                 ],
               ),
-            ),
-            !residentialIsChecked
-                ? LocationInput(onLocationSelected: onLocationSelected)
-                : const Center(),
-            SizedBox(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                  focusNode: _submitFocus,
-                  onPressed: submit,
-                  child: const Text("Agendar aula")),
-            )
-          ],
+              const Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text('Início'),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Spacer(flex: 1),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                        '${date_init.day}/${date_init.month}/${date_init.year}'),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: _showDateInitPicker,
+                      child: const Icon(
+                        Icons.calendar_today,
+                        size: 24.0,
+                        semanticLabel: 'Definir Início',
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Spacer(flex: 1),
+                  Expanded(
+                    flex: 2,
+                    child: Text('${time_init.hour}:${time_init.minute}'),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: _showTimeInitPicker,
+                      child: const Icon(Icons.lock_clock,
+                          size: 24.0, semanticLabel: 'Definir Início'),
+                    ),
+                  )
+                ],
+              ),
+              const Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text('Final'),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Spacer(flex: 1),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                        '${date_end.day}/${date_end.month}/${date_end.year}'),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: _showDateEndPicker,
+                      child: const Icon(Icons.calendar_today,
+                          size: 24.0, semanticLabel: 'Definir Final'),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Spacer(flex: 1),
+                  Expanded(
+                    flex: 2,
+                    child: Text('${time_end.hour}:${time_end.minute}'),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextButton(
+                      onPressed: _showTimeEndPicker,
+                      child: const Icon(Icons.lock_clock,
+                          size: 24.0, semanticLabel: 'Definir Horário final'),
+                    ),
+                  )
+                ],
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+              ),
+              students.isNotEmpty
+                  ? StudentDropdown(
+                      students: students,
+                      selectedStudent: formData['student'] as StudentStore?,
+                      onChanged: (student) {
+                        if (student == null) return;
+                        setState(() {
+                          formData['student'] = student;
+                        });
+                      },
+                    )
+                  : const Text("Não há estudantes cadastrados"),
+              TextFormField(
+                initialValue: formData['subject']?.toString(),
+                decoration: const InputDecoration(
+                  labelText: 'Assunto',
+                ),
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                focusNode: _subjectFocus,
+                onChanged: (subject) => formData['subject'] = subject,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_paymentAmountFocus);
+                },
+                onSaved: (subject) => formData['subject'] = subject ?? '',
+                validator: (_subject) {
+                  final subject = _subject ?? '';
+
+                  if (subject.trim().isEmpty) {
+                    return 'Obrigatório';
+                  }
+
+                  return null;
+                },
+              ),
+              TextFormField(
+                initialValue: formData['paymentAmount']?.toString(),
+                decoration: const InputDecoration(
+                  labelText: 'Valor da aula R\$',
+                ),
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_residentialFocus);
+                },
+                onSaved: (paymentAmount) =>
+                    formData['paymentAmount'] = paymentAmount ?? '',
+                onChanged: (paymentAmount) =>
+                    formData['paymentAmount'] = paymentAmount,
+                validator: (_paymentAmount) {
+                  final paymentAmount = _paymentAmount ?? '';
+
+                  if (paymentAmount.trim().isEmpty) {
+                    return 'Obrigatório';
+                  }
+
+                  return null;
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10.0, 0.0, 5.0),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      focusNode: _residentialFocus,
+                      value: residentialIsChecked,
+                      onChanged: (residential) {
+                        formData['residential'] = residential ?? '';
+                        setState(() {
+                          print(
+                              'Valor de students após a modificação: $students');
+
+                          residentialIsChecked = residential ?? false;
+                        });
+                      },
+                    ),
+                    const Text("A aula será no endereço do aluno")
+                  ],
+                ),
+              ),
+              !residentialIsChecked
+                  ? LocationInput(onLocationSelected: onLocationSelected)
+                  : const Center(),
+              SizedBox(
+                width: 200,
+                height: 50,
+                child: ElevatedButton(
+                    focusNode: _submitFocus,
+                    onPressed: submit,
+                    child: const Text("Agendar aula")),
+              )
+            ],
+          ),
         ),
       ),
     );
