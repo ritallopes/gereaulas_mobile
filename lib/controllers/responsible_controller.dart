@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/responsible.store.dart';
-import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +20,23 @@ class ResponsibleController {
       if (idResp != '') {
         return findById(idResp);
       }
+    }
+    return null;
+  }
+
+  static Future<ResponsibleStore?> createResponsible(
+      ResponsibleStore responsibleStore) async {
+    final response = await http.post(Uri.parse('$API_LOCAL/responsible.json'),
+        body: json.encode({
+          'email': responsibleStore.email,
+          'name': responsibleStore.name,
+          'contato': responsibleStore.contact
+        }));
+    if (response.statusCode == 200) {
+       final Map<String, dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          return createResponsibleByMap(data);
+        }
     }
     return null;
   }
@@ -64,28 +81,48 @@ class ResponsibleController {
   }
 
   static Future<List<ResponsibleStore>> findAll() async {
+    String token = UserController.tokenUser;
+    if (token == '') return [];
     try {
-      final response = await http.get(Uri.parse('$API_PATH/responsible.json'));
+      final response =
+          await http.get(Uri.parse('$API_LOCAL/responsibles'), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
       List<ResponsibleStore> responsibles = [];
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+        final data = json.decode(response.body);
         if (data.isNotEmpty) {
-          data.forEach((key, value) {
-            String id = key;
-            ResponsibleStore responsibleStore = _createUserByJson(id, data[id]);
-            if (responsibleStore.id != '') {
-              responsibles.add(responsibleStore);
-            }
-          });
+          for (var responsavel in data) {
+            responsibles.add(createResponsibleByMap(responsavel));
+          }
           return responsibles;
         }
       } else {
-        print('Falha ao buscar usuários: ${response.statusCode}');
+        print('Falha ao buscar responsaveis: ${response.statusCode}');
       }
     } catch (error) {
-      print('no findAll');
-      print('Erro ao buscar todos os usuários: $error');
+      print('Erro ao buscar todos os os responsáveis: $error');
     }
     return [];
+  }
+
+  static ResponsibleStore createResponsibleByMap(Map<String, dynamic> json) {
+    try {
+      if (json['email'] == null || json['id'] == null) {
+        throw Exception("Dados de responsável inválidos no JSON");
+      }
+      ResponsibleStore responsibleStore = ResponsibleStore();
+
+      responsibleStore.setId(json['id'].toString());
+      responsibleStore.setEmail(json['email'].toString());
+      responsibleStore.setName(json['name'].toString());
+      responsibleStore.setContact(json['contato'] ?? '');
+      return responsibleStore;
+    } catch (e) {
+      print("Erro ao criar o responsavel a partir do Map: $e");
+      return ResponsibleStore();
+    }
   }
 }

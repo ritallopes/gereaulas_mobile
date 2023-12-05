@@ -1,11 +1,101 @@
 import 'dart:convert';
 
+import 'package:gereaulas_mobile/controllers/user_controller.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class TeacherController {
   TeacherController();
+
+  static Future<String> saveImageToFile(File imageFile, String fileName) async {
+    try {
+      // Obter o diretório de documentos do aplicativo
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+
+      // Construir o caminho completo para o arquivo
+      String imagePath = '$appDocPath/$fileName';
+
+      // Salvar a imagem no arquivo
+      await imageFile.copy(imagePath);
+
+      // Retornar o caminho do arquivo salvo
+      return imagePath;
+    } catch (e) {
+      // Lidar com qualquer erro que possa ocorrer durante o processo
+      print('Erro ao salvar a imagem: $e');
+      return ''; // Retornar uma string vazia em caso de erro
+    }
+  }
+
+  static Future<TeacherStore?> saveTeacher(
+    String name,
+    String email,
+    String image_profile,
+  ) async {
+    
+    try {
+      final response = await http.post(Uri.parse('$API_LOCAL/teachers'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: json.encode(
+              {'name': name, 'email': email, 'image_profile': image_profile}));
+      print({'name': name, 'email': email, 'imageProfile': image_profile});
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        if (data.isNotEmpty) {
+          return createTeacherByMap(data);
+        }
+      }
+      return null;
+    } catch (e) {
+      print("Falha ao salvar professor: " + e.toString());
+    }
+  }
+
+  static TeacherStore createTeacherByMap(Map<String, dynamic> json) {
+    try {
+      if (json['email'] == null || json['id'] == null) {
+        throw Exception("Dados de professor inválidos no JSON");
+      }
+      TeacherStore teacherStore = TeacherStore();
+
+      teacherStore.setId(json['id'].toString());
+      teacherStore.setEmail(json['email'].toString());
+      teacherStore.setName(json['name'].toString());
+      teacherStore.setImageProfile(json['imageProfile'].toString());
+      return teacherStore;
+    } catch (e) {
+      print("Erro ao criar o professor a partir do Map: $e");
+      return TeacherStore();
+    }
+  }
+
+  static Future<TeacherStore?> findByEmail(String email) async {
+    String token = UserController.tokenUser;
+    if (token == '') return null;
+    final response =
+        await http.get(Uri.parse('$API_LOCAL/teachers/email/$email'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      if (data.isNotEmpty) {
+        return createTeacherByMap(data);
+      }
+    } else {
+      print("Professor com o email $email não foi encontrado!");
+      return null;
+    }
+  }
+
   static Future<TeacherStore?> createTeacher(
     String name,
     String email,
@@ -26,9 +116,7 @@ class TeacherController {
   static TeacherStore createTeacherByJson(
       String id, Map<String, dynamic> json) {
     try {
-      if (json['email'] == null ||
-          json['name'] == null ||
-          json['image_profile'] == null) {
+      if (json['email'] == null || json['name'] == null) {
         throw Exception("Dados de professores inválidos no JSON");
       }
 
@@ -36,7 +124,8 @@ class TeacherController {
       teacherStore.setId(id);
       teacherStore.setEmail(json['email'] ?? '');
       teacherStore.setName(json['name'] ?? '');
-      teacherStore.setImageProfile(json['image_profile'] ?? '');
+      teacherStore
+          .setImageProfile(json['imageProfile'] ?? json['image_profile'] ?? '');
 
       return teacherStore;
     } catch (e) {
@@ -45,42 +134,55 @@ class TeacherController {
     }
   }
 
-  static Future<TeacherStore> findById(String id) async {
+  static Future<TeacherStore?> findById(String id) async {
+    String token = UserController.tokenUser;
+    if (token == '') return null;
     try {
-      final response = await http.get(Uri.parse('$API_PATH/teachers/$id.json'));
+      final response =
+          await http.get(Uri.parse('$API_LOCAL/teachers/$id'), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         if (data.isNotEmpty) {
-          return createTeacherByJson(id, data);
+          return createTeacherByMap(data);
         }
       } else {
-        print('Falha ao buscar professor: ${response.statusCode}');
+        print('Falha ao buscar professor por Id $id: ${response.statusCode}');
       }
     } catch (error) {
-      print('Erro ao buscar por ID: $error');
+      print('Erro ao buscar professor por ID: $error');
     }
-    return TeacherStore();
+    return null;
   }
 
   static Future<List<TeacherStore>> findAll() async {
+    String token = UserController.tokenUser;
+    if (token == '') return [];
     try {
-      final response = await http.get(Uri.parse('$API_PATH/teachers.json'));
+      final response =
+          await http.get(Uri.parse('$API_LOCAL/teachers'), headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
       List<TeacherStore> teachers = [];
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+        final data = json.decode(response.body);
         if (data.isNotEmpty) {
-          data.forEach((key, value) {
-            String id = key;
-            teachers.add(createTeacherByJson(id, data[id]));
-          });
+          for (var t in data) {
+            teachers.add(createTeacherByMap(t));
+          }
           return teachers;
         }
       } else {
-        print('Falha ao buscar professoress: ${response.statusCode}');
+        print('Falha ao buscar professores: ${response.statusCode}');
       }
     } catch (error) {
-      print('Erro ao buscar todos: $error');
+      print('Erro ao buscar toErrodos os professores: $error');
     }
     return [];
   }

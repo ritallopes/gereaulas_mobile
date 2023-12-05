@@ -8,9 +8,9 @@ part of 'r_time_t_list.store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$RTimeRListStore on _RTimeRListStore, Store {
+mixin _$TimeListStore on _TimeListStore, Store {
   late final _$reservedTimeListAtom =
-      Atom(name: '_RTimeRListStore.reservedTimeList', context: context);
+      Atom(name: '_TimeListStore.reservedTimeList', context: context);
 
   @override
   ObservableList<ReservedTimeTeacherStore> get reservedTimeList {
@@ -25,51 +25,92 @@ mixin _$RTimeRListStore on _RTimeRListStore, Store {
     });
   }
 
-  late final _$_RTimeRListStoreActionController =
-      ActionController(name: '_RTimeRListStore', context: context);
+  late final _$initTimesAsyncAction =
+      AsyncAction('_TimeListStore.initTimes', context: context);
+
+  @override
+  Future<void> initTimes() {
+    return _$initTimesAsyncAction.run(() => super.initTimes());
+  }
+
+  late final _$addReservedTimeStoreTeacherAsyncAction = AsyncAction(
+      '_TimeListStore.addReservedTimeStoreTeacher',
+      context: context);
+
+  @override
+  Future<ReservedTimeTeacherStore?> addReservedTimeStoreTeacher(
+      ReservedTimeTeacherStore newTime) {
+    return _$addReservedTimeStoreTeacherAsyncAction
+        .run(() => super.addReservedTimeStoreTeacher(newTime));
+  }
+
+  late final _$_TimeListStoreActionController =
+      ActionController(name: '_TimeListStore', context: context);
 
   @override
   dynamic addInitialReservedTime(dynamic Class) {
-    final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
-        name: '_RTimeRListStore.addInitialReservedTime');
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.addInitialReservedTime');
     try {
       return super.addInitialReservedTime(Class);
     } finally {
-      _$_RTimeRListStoreActionController.endAction(_$actionInfo);
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   ObservableList<ReservedTimeTeacherStore> findByTeacher(String idTeacher) {
-    final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
-        name: '_RTimeRListStore.findByTeacher');
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.findByTeacher');
     try {
       return super.findByTeacher(idTeacher);
     } finally {
-      _$_RTimeRListStoreActionController.endAction(_$actionInfo);
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void addReservedTimeTeacher(
-      ReservedTime reservedTime, TeacherStore teacher, bool isOccupied) {
-    final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
-        name: '_RTimeRListStore.addReservedTimeTeacher');
+      DateTime start, DateTime endTime, TeacherStore teacher, bool isOccupied) {
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.addReservedTimeTeacher');
     try {
-      return super.addReservedTimeTeacher(reservedTime, teacher, isOccupied);
+      return super.addReservedTimeTeacher(start, endTime, teacher, isOccupied);
     } finally {
-      _$_RTimeRListStoreActionController.endAction(_$actionInfo);
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   void removeReservedTimeTeacher(ReservedTimeTeacherStore reservedTimeTeacher) {
-    final _$actionInfo = _$_RTimeRListStoreActionController.startAction(
-        name: '_RTimeRListStore.removeReservedTimeTeacher');
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.removeReservedTimeTeacher');
     try {
       return super.removeReservedTimeTeacher(reservedTimeTeacher);
     } finally {
-      _$_RTimeRListStoreActionController.endAction(_$actionInfo);
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  ObservableList<ReservedTimeTeacherStore> findByTeacherId(String idTeacher) {
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.findByTeacherId');
+    try {
+      return super.findByTeacherId(idTeacher);
+    } finally {
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  ObservableList<ReservedTimeTeacherStore> findByTeacherEmail(String email) {
+    final _$actionInfo = _$_TimeListStoreActionController.startAction(
+        name: '_TimeListStore.findByTeacherEmail');
+    try {
+      return super.findByTeacherEmail(email);
+    } finally {
+      _$_TimeListStoreActionController.endAction(_$actionInfo);
     }
   }
 

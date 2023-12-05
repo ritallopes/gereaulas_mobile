@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:gereaulas_mobile/controllers/class_controller.dart';
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
+import 'package:gereaulas_mobile/controllers/reserved_controller.dart';
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
+import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/student.store.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
-import 'package:gereaulas_mobile/models/stores/teacher_list.store.dart';
 import 'package:gereaulas_mobile/utils/utils_functions.dart';
 import 'package:mobx/mobx.dart';
 part 'class_list.store.g.dart';
@@ -20,7 +20,7 @@ abstract class _ClassListStore with Store {
   }
   @action
   Future<void> initClasses() async {
-    List<ClassStore> classList = await ClassController.findAll();
+    List<ClassStore> classList = await ClassController.findAllLocal();
     allClass.clear();
     allClass.addAll(classList);
   }
@@ -32,10 +32,11 @@ abstract class _ClassListStore with Store {
 
   @action
   void addClassFromFields({
-    required ReservedTime time,
+    required ReservedTimeTeacherStore time,
     required StudentStore student,
     required TeacherStore teacher,
     String status = 'notStarted',
+    String address = '',
     required bool residential,
     required double paymentAmount,
     required String subject,
@@ -47,23 +48,31 @@ abstract class _ClassListStore with Store {
       ..setStatus(status)
       ..setResidential(residential)
       ..setPaymentAmount(paymentAmount)
+      ..setAddress(residential ? student.address : address)
       ..setSubject(subject);
-
-    allClass.add(newClass);
+    ReservedController.saveReservedTimeTeacher(reservedTimeTeacherStore: time)
+        .then((value) {
+      newClass.classTime.id = value?.id ?? '';
+      ClassController.createClass(newClass);
+      allClass.add(newClass);
+    });
   }
 
   @action
   void createClassFormData(Map<String, Object> formData) {
     ClassStore newClass = ClassStore();
-    newClass.setTime(formData['time'] as ReservedTime);
-    newClass.setStudent((formData['student'] as StudentStore).id);
+    newClass.setTime(formData['time'] as ReservedTimeTeacherStore);
+    newClass.setStudent(formData['student'].toString());
     newClass.setTeacher((formData['teacher'] as TeacherStore).id);
     newClass.setStatus('notStarted');
+
     newClass.setResidential(formData['residential'] as bool);
     newClass
         .setPaymentAmount(double.parse(formData['paymentAmount'].toString()));
     newClass.setSubject(formData['subject'].toString());
+    newClass.setAddress(formData['address'] as String);
 
+    ClassController.createClass(newClass);
     allClass.add(newClass);
   }
 
@@ -86,7 +95,8 @@ abstract class _ClassListStore with Store {
   }
 
   @action
-  void cloneClass(ClassStore classSource, ReservedTime time, String subject) {
+  void cloneClass(
+      ClassStore classSource, ReservedTimeTeacherStore time, String subject) {
     ClassStore newClass = ClassStore();
 
     allClass.add(newClass);

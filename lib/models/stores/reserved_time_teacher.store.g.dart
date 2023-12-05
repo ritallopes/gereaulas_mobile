@@ -9,19 +9,51 @@ part of 'reserved_time_teacher.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ReservedTimeTeacherStore on _ReservedTimeTeacherStore, Store {
-  late final _$reservedTimeAtom =
-      Atom(name: '_ReservedTimeTeacherStore.reservedTime', context: context);
+  late final _$startAtom =
+      Atom(name: '_ReservedTimeTeacherStore.start', context: context);
 
   @override
-  ReservedTime get reservedTime {
-    _$reservedTimeAtom.reportRead();
-    return super.reservedTime;
+  DateTime get start {
+    _$startAtom.reportRead();
+    return super.start;
   }
 
   @override
-  set reservedTime(ReservedTime value) {
-    _$reservedTimeAtom.reportWrite(value, super.reservedTime, () {
-      super.reservedTime = value;
+  set start(DateTime value) {
+    _$startAtom.reportWrite(value, super.start, () {
+      super.start = value;
+    });
+  }
+
+  late final _$endTimeAtom =
+      Atom(name: '_ReservedTimeTeacherStore.endTime', context: context);
+
+  @override
+  DateTime get endTime {
+    _$endTimeAtom.reportRead();
+    return super.endTime;
+  }
+
+  @override
+  set endTime(DateTime value) {
+    _$endTimeAtom.reportWrite(value, super.endTime, () {
+      super.endTime = value;
+    });
+  }
+
+  late final _$idAtom =
+      Atom(name: '_ReservedTimeTeacherStore.id', context: context);
+
+  @override
+  String get id {
+    _$idAtom.reportRead();
+    return super.id;
+  }
+
+  @override
+  set id(String value) {
+    _$idAtom.reportWrite(value, super.id, () {
+      super.id = value;
     });
   }
 
@@ -29,13 +61,13 @@ mixin _$ReservedTimeTeacherStore on _ReservedTimeTeacherStore, Store {
       Atom(name: '_ReservedTimeTeacherStore.teacher', context: context);
 
   @override
-  TeacherStore get teacher {
+  TeacherStore? get teacher {
     _$teacherAtom.reportRead();
     return super.teacher;
   }
 
   @override
-  set teacher(TeacherStore value) {
+  set teacher(TeacherStore? value) {
     _$teacherAtom.reportWrite(value, super.teacher, () {
       super.teacher = value;
     });
@@ -59,6 +91,17 @@ mixin _$ReservedTimeTeacherStore on _ReservedTimeTeacherStore, Store {
 
   late final _$_ReservedTimeTeacherStoreActionController =
       ActionController(name: '_ReservedTimeTeacherStore', context: context);
+
+  @override
+  void setFieldsFromJson(Map<String, dynamic> json) {
+    final _$actionInfo = _$_ReservedTimeTeacherStoreActionController
+        .startAction(name: '_ReservedTimeTeacherStore.setFieldsFromJson');
+    try {
+      return super.setFieldsFromJson(json);
+    } finally {
+      _$_ReservedTimeTeacherStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void markAsOccupied() {
@@ -85,7 +128,9 @@ mixin _$ReservedTimeTeacherStore on _ReservedTimeTeacherStore, Store {
   @override
   String toString() {
     return '''
-reservedTime: ${reservedTime},
+start: ${start},
+endTime: ${endTime},
+id: ${id},
 teacher: ${teacher},
 isOccupied: ${isOccupied}
     ''';

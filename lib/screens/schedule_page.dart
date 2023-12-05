@@ -9,7 +9,7 @@ import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart'
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:intl/intl.dart';
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class SchedulePage extends StatefulWidget {
@@ -21,9 +21,9 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   late UserStore userStore;
   late TeacherStore teacherStore;
-  late ClassListStore classStoreList;
 
-  late RTimeRListStore rTimeRListStore;
+  late TimeListStore rTimeRListStore;
+  late List<ReservedTimeTeacherStore> timesList;
 
   final _dateFormat = DateFormat('dd/MM/yyyy');
   final _timeFormat = DateFormat('HH:mm');
@@ -33,13 +33,15 @@ class _SchedulePageState extends State<SchedulePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     teacherStore = Provider.of<TeacherStore>(context);
+    newReservedTime = ReservedTimeTeacherStore(
+        start: DateTime.now(),
+        endTime: DateTime.now(),
+        teacher: teacherStore,
+        isOccupied: false);
   }
 
   @override
   void initState() {
-    newReservedTime = ReservedTimeTeacherStore(
-        reservedTime: ReservedTime(start: DateTime.now(), end: DateTime.now()),
-        teacher: TeacherStore());
     super.initState();
   }
 
@@ -49,19 +51,24 @@ class _SchedulePageState extends State<SchedulePage> {
     });
   }
 
+  void saveSchedule(ReservedTimeTeacherStore reserved) {
+    rTimeRListStore.addReservedTimeStoreTeacher(reserved).then((value) {
+      setState(() {
+        timesList = ObservableList.of(
+            rTimeRListStore.findByTeacherEmail(userStore.email));
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     userStore = Provider.of<UserStore>(context);
-    classStoreList = Provider.of<ClassListStore>(context);
-    rTimeRListStore = Provider.of<RTimeRListStore>(context);
+    rTimeRListStore = Provider.of<TimeListStore>(context);
+    teacherStore = Provider.of<TeacherStore>(context);
+    timesList =
+        ObservableList.of(rTimeRListStore.findByTeacherEmail(userStore.email));
 
     setNewReservedTime(userStore.email);
-
-    classStoreList.findByTeacher(newReservedTime.teacher.email).forEach((e) =>
-        rTimeRListStore.addReservedTimeTeacher(
-            ReservedTime(start: e.classTime.start, end: e.classTime.end),
-            newReservedTime.teacher,
-            true));
 
     return Scaffold(
       appBar: AppBarCustom(pageTitle: "Agendar Horário"),
@@ -82,8 +89,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_dateFormat
-                              .format(newReservedTime.reservedTime.start)),
+                          Text(_dateFormat.format(newReservedTime.start)),
                           TextButton(
                             onPressed: _selectStartDate,
                             child: const Icon(
@@ -110,8 +116,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_timeFormat
-                              .format(newReservedTime.reservedTime.start)),
+                          Text(_timeFormat.format(newReservedTime.start)),
                           TextButton(
                             onPressed: _selectStartTime,
                             child: const Icon(
@@ -141,8 +146,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_dateFormat
-                              .format(newReservedTime.reservedTime.end)),
+                          Text(_dateFormat.format(newReservedTime.endTime)),
                           TextButton(
                             onPressed: _selectEndDate,
                             child: const Icon(
@@ -169,8 +173,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_timeFormat
-                              .format(newReservedTime.reservedTime.end)),
+                          Text(_timeFormat.format(newReservedTime.endTime)),
                           TextButton(
                             onPressed: _selectEndTime,
                             child: const Icon(
@@ -214,50 +217,50 @@ class _SchedulePageState extends State<SchedulePage> {
               width: 50,
               height: 40,
               child: ElevatedButton(
-                  onPressed: () => saveSchedule(ReservedTimeTeacherStore(
-                      reservedTime: newReservedTime.reservedTime,
-                      teacher: newReservedTime.teacher,
-                      isOccupied: newReservedTime.isOccupied)),
+                  onPressed: () => saveSchedule(newReservedTime),
                   child: const Text("Salvar Horário")),
             ),
             const SizedBox(height: 20),
             const Text('Horários:',
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            Observer(builder: (_) {
-              return Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
-                  shrinkWrap: true,
-                  itemCount: rTimeRListStore.reservedTimeList.length,
-                  itemBuilder: (context, index) {
-                    var scheduledTime = rTimeRListStore.reservedTimeList[index];
-                    return ScheduleItem(scheduledTime);
-                  },
-                ),
-              );
-            }),
+            timesList.isNotEmpty
+                ? Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(8.0),
+                      shrinkWrap: true,
+                      itemCount: timesList.length,
+                      itemBuilder: (context, index) {
+                        var scheduledTime = timesList[index];
+                        return ScheduleItem(scheduledTime);
+                      },
+                    ),
+                  )
+                : const Center(
+                    child: Text(
+                      "Você não tem horários agendados",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  )
           ],
         ),
       ),
     );
   }
 
-  void saveSchedule(ReservedTimeTeacherStore reserved) {
-    rTimeRListStore.addReservedTimeTeacher(
-        reserved.reservedTime, reserved.teacher, reserved.isOccupied);
-  }
-
   void _selectStartDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: newReservedTime.reservedTime.start,
+      initialDate: newReservedTime.start,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(Duration(days: 365)),
     );
-    if (pickedDate != null &&
-        pickedDate != newReservedTime.reservedTime.start) {
+    if (pickedDate != null && pickedDate != newReservedTime.start) {
       setState(() {
-        newReservedTime.reservedTime.start = pickedDate;
+        newReservedTime.start = pickedDate;
       });
     }
   }
@@ -265,14 +268,14 @@ class _SchedulePageState extends State<SchedulePage> {
   void _selectStartTime() async {
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(newReservedTime.reservedTime.start),
+      initialTime: TimeOfDay.fromDateTime(newReservedTime.start),
     );
     if (pickedTime != null) {
       setState(() {
-        newReservedTime.reservedTime.start = DateTime(
-          newReservedTime.reservedTime.start.year,
-          newReservedTime.reservedTime.start.month,
-          newReservedTime.reservedTime.start.day,
+        newReservedTime.start = DateTime(
+          newReservedTime.start.year,
+          newReservedTime.start.month,
+          newReservedTime.start.day,
           pickedTime.hour,
           pickedTime.minute,
         );
@@ -283,13 +286,13 @@ class _SchedulePageState extends State<SchedulePage> {
   void _selectEndDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: newReservedTime.reservedTime.end,
+      initialDate: newReservedTime.endTime,
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    if (pickedDate != null && pickedDate != newReservedTime.reservedTime.end) {
+    if (pickedDate != null && pickedDate != newReservedTime.endTime) {
       setState(() {
-        newReservedTime.reservedTime.end = pickedDate;
+        newReservedTime.endTime = pickedDate;
       });
     }
   }
@@ -297,14 +300,14 @@ class _SchedulePageState extends State<SchedulePage> {
   void _selectEndTime() async {
     TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(newReservedTime.reservedTime.end),
+      initialTime: TimeOfDay.fromDateTime(newReservedTime.endTime),
     );
     if (pickedTime != null) {
       setState(() {
-        newReservedTime.reservedTime.end = DateTime(
-          newReservedTime.reservedTime.end.year,
-          newReservedTime.reservedTime.end.month,
-          newReservedTime.reservedTime.end.day,
+        newReservedTime.endTime = DateTime(
+          newReservedTime.endTime.year,
+          newReservedTime.endTime.month,
+          newReservedTime.endTime.day,
           pickedTime.hour,
           pickedTime.minute,
         );

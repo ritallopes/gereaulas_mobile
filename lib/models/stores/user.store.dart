@@ -17,6 +17,9 @@ class UserStore = _UserStore with _$UserStore;
 
 abstract class _UserStore with Store {
   @observable
+  String token = '';
+
+  @observable
   String id = '';
   @action
   void setId(String value) => id = value;
@@ -35,6 +38,11 @@ abstract class _UserStore with Store {
   @action
   void setPassword(String value) {
     password = value;
+  }
+
+  @action
+  void setToken(String value) {
+    token = value;
   }
 
   UserType type = UserType.NOTYPE;
@@ -57,6 +65,29 @@ abstract class _UserStore with Store {
 
   @observable
   bool isAuthenticated = false;
+
+  @action
+  Future<bool> auth(String email, String password) async {
+    try {
+      await UserController.auth(email, password).then((value) {
+        if (value != null) {
+          this.email = value.email;
+          this.password = value.password;
+          id = value.id;
+          token = value.token;
+          isAuthenticated = true;
+        } else {
+          isAuthenticated = false;
+        }
+      });
+      return isAuthenticated;
+    } catch (e) {
+      print('Erro de login: $e');
+      isAuthenticated = false;
+      token = '';
+      return isAuthenticated;
+    }
+  }
 
   @action
   Future<bool> login(String email, String password) async {
@@ -94,6 +125,16 @@ abstract class _UserStore with Store {
     type = UserType.NOTYPE;
     isAuthenticated = false;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserStore && other.id == id && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
 
   @computed
   bool get isFieldLoginFilled {

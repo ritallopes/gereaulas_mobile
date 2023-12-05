@@ -71,6 +71,17 @@ mixin _$StudentListStore on _StudentListStore, Store {
   }
 
   @override
+  List<StudentStore> getUniqueStudents() {
+    final _$actionInfo = _$_StudentListStoreActionController.startAction(
+        name: '_StudentListStore.getUniqueStudents');
+    try {
+      return super.getUniqueStudents();
+    } finally {
+      _$_StudentListStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   StudentStore findById(String id) {
     final _$actionInfo = _$_StudentListStoreActionController.startAction(
         name: '_StudentListStore.findById');

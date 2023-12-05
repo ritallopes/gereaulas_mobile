@@ -1,6 +1,4 @@
-import 'package:gereaulas_mobile/models/domain/reserved_time.dart';
-import 'package:gereaulas_mobile/models/stores/student.store.dart';
-import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
+import 'package:gereaulas_mobile/models/stores/reserved_time_teacher.store.dart';
 import 'package:mobx/mobx.dart';
 part 'class.store.g.dart';
 
@@ -8,12 +6,13 @@ class ClassStore = _ClassStore with _$ClassStore;
 
 abstract class _ClassStore with Store {
   @observable
-  ReservedTime _time = ReservedTime(start: DateTime.now(), end: DateTime.now());
+  ReservedTimeTeacherStore _time =
+      ReservedTimeTeacherStore(start: DateTime.now(), endTime: DateTime.now());
 
-  ReservedTime get time => _time;
+  ReservedTimeTeacherStore get time => _time;
 
   @action
-  void setTime(ReservedTime value) {
+  void setTime(ReservedTimeTeacherStore value) {
     _time = value;
   }
 
@@ -69,6 +68,16 @@ abstract class _ClassStore with Store {
   @observable
   String _subject = '';
 
+  @observable
+  String _address = '';
+
+  @action
+  void setAddress(String value) {
+    _address = value;
+  }
+
+  String get address => _address;
+
   String get subject => _subject;
 
   @action
@@ -87,7 +96,7 @@ abstract class _ClassStore with Store {
   }
 
   @computed
-  ReservedTime get classTime => time;
+  ReservedTimeTeacherStore get classTime => time;
 
   @computed
   String get classStudent => student;
@@ -112,6 +121,7 @@ abstract class _ClassStore with Store {
 
   @action
   void changeStatus(String newStatus) {
+    //TODO updates
     _status = newStatus;
   }
 
@@ -124,6 +134,7 @@ abstract class _ClassStore with Store {
         'residential: $residential, '
         'paymentAmount: $paymentAmount, '
         'subject: $subject, '
-        'status: $status}';
+        'status: $status, '
+        'address: $_address}';
   }
 }

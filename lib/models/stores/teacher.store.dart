@@ -23,8 +23,18 @@ abstract class _TeacherStore with Store {
 
   @override
   String toString() {
-    return 'Teacher{name: $name, email: $email, imageProfile: $image_profile}';
+    return 'Teacher{name: $name, email: $email, image_profile: $image_profile}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TeacherStore && other.id == id && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
 
   @action
   void copy(TeacherStore other) {

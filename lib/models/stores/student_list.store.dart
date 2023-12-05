@@ -17,7 +17,7 @@ abstract class _StudentListStore with Store {
 
   @action
   Future<void> initStudents() async {
-    List<StudentStore> studentsList = await StudentController.findAll();
+    List<StudentStore> studentsList = await StudentController.findAllLocal();
     students.clear();
     students.addAll(studentsList);
   }
@@ -47,6 +47,21 @@ abstract class _StudentListStore with Store {
     students.where((e) => idStudents.contains(e.id)).toList();
     //return studentsTeacher;
     return students;
+  }
+
+  @action
+  List<StudentStore> getUniqueStudents() {
+    Set<String> uniqueStudentIds = {};
+    List<StudentStore> uniqueStudents = [];
+
+    for (var student in students) {
+      if (!uniqueStudentIds.contains(student.id)) {
+        uniqueStudentIds.add(student.id);
+        uniqueStudents.add(student);
+      }
+    }
+
+    return uniqueStudents;
   }
 
   @action

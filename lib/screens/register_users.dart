@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:gereaulas_mobile/components/image_upload.dart';
 import 'package:gereaulas_mobile/components/register_student.dart';
 import 'package:gereaulas_mobile/controllers/teacher_controller.dart';
 import 'package:gereaulas_mobile/controllers/user_controller.dart';
+import 'package:gereaulas_mobile/database/users_db.dart';
 import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:gereaulas_mobile/utils/app_routes.dart';
@@ -29,6 +33,23 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
     super.initState();
   }
 
+  File? _pickedImage;
+
+  void _selectImage(File? pickedImage) async {
+    _pickedImage = pickedImage;
+    if (_pickedImage != null) return;
+    String fileName = '${_formData['name']}.jpg'; // Nome do arquivo desejado
+
+    String savedImagePath = await TeacherController.saveImageToFile(
+        _pickedImage ?? File.fromUri(Uri.dataFromString(fileName)), fileName);
+
+    if (savedImagePath.isNotEmpty) {
+      print('Imagem salva com sucesso em: $savedImagePath');
+    } else {
+      print('Erro ao salvar a imagem.');
+    }
+  }
+
   void _submitRegister() {
     final isValid = _formKey.currentState?.validate() ?? false;
 
@@ -41,12 +62,17 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
     String email = _formData['email'].toString();
     String password = _formData['password'].toString();
     String name = _formData['name'].toString();
-    String image_profile = _formData['image'].toString();
+    String image_profile = '';
 
-    UserController.createUser(email, password, type.toUpperCase());
+    UserDb()
+        .saveImageToAppDirectory(_pickedImage, name)
+        .then((value) => image_profile = value);
+
+    UserController.saveUser(email, password, type.toUpperCase());
     if (_selectedUserType == UserType.TEACHER) {
       Future<TeacherStore?> t =
-          TeacherController.createTeacher(name, email, image_profile);
+          TeacherController.saveTeacher(name, email, image_profile);
+      print(t.toString());
     }
     Navigator.of(context).pushNamed(
       Routes.LOGIN_PAGE,
@@ -153,29 +179,7 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
               const SizedBox(
                 height: 20,
               ),
-              TextFormField(
-                initialValue: _formData['image']?.toString(),
-                focusNode: _imageFocus,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Link de Foto do perfil',
-                ),
-                textInputAction: TextInputAction.next,
-                onSaved: (image) => _formData['image'] = image ?? '',
-                validator: (_image) {
-                  final image = _image ?? '';
-
-                  if (image.trim().isEmpty) {
-                    return 'Imagem do perfil é obrigatório';
-                  }
-
-                  if (image.trim().length < 3) {
-                    return 'Imagem do perfil precisa ser um link';
-                  }
-
-                  return null;
-                },
-              ),
+              ImageUpload(_selectImage),
               const SizedBox(
                 height: 20,
               ),

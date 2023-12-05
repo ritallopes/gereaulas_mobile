@@ -33,20 +33,38 @@ dependencies:
   intl: 0.17.0
   flutter_native_splash: ^2.3.2
   http: ^1.1.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  google_maps_flutter: ^2.5.0
+  location:
+    git:
+      url: https://github.com/781flyingdutchman/flutterlocation.git
+      ref: V4
+      path: packages/location
+  url_launcher: ^6.2.1
+  firebase_auth: ^4.14.1
+  geocoding: ^2.1.1
   cupertino_icons: ^1.0.2
   mobx: ^2.2.0
   flutter_mobx: ^2.1.0
   provider: ^6.0.5
   collection: ^1.17.2
+  firebase_core: ^2.24.0
+  firebase_messaging: ^14.7.6
+  path_provider: ^2.0.15
+  path: ^1.8.3
+  sqflite: ^2.3.0
+  path_provider_android: ^2.2.1
+  path_provider_ios: ^2.0.11
+  connectivity: ^3.0.6
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.6
   mobx_codegen: ^2.4.0
+  image_picker: ^0.8.5+3
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
