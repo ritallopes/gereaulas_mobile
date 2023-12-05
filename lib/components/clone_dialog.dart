@@ -56,6 +56,8 @@ class _CloneDialogState extends State<CloneDialog> {
     formData['student'] = widget.itemSource.classStudent;
     formData['residential'] = widget.itemSource.isResidential;
     formData['subject'] = widget.itemSource.classSubject;
+    formData['address'] = widget.itemSource.address;
+
     formData['teacher'] = teacherStore;
     formData['status'] = 'notStarted';
     formData['paymentAmount'] = widget.itemSource.classPaymentAmount;

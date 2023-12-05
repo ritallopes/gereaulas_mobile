@@ -6,6 +6,7 @@ import 'package:gereaulas_mobile/components/drawer_nav.dart';
 
 import 'package:gereaulas_mobile/models/stores/class.store.dart';
 import 'package:gereaulas_mobile/models/stores/class_list.store.dart';
+import 'package:gereaulas_mobile/models/stores/teacher.store.dart';
 import 'package:gereaulas_mobile/models/stores/user.store.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ class ClassPage extends StatefulWidget {
 
 class _ClassPageState extends State<ClassPage> {
   late UserStore userStore;
+  late TeacherStore teacherStore;
+
   late ClassListStore classListStore;
   @override
   void initState() {
@@ -36,13 +39,15 @@ class _ClassPageState extends State<ClassPage> {
   @override
   Widget build(BuildContext context) {
     userStore = Provider.of<UserStore>(context);
+    teacherStore = Provider.of<TeacherStore>(context);
+
     classListStore = Provider.of<ClassListStore>(context);
 
     return Scaffold(
         appBar: AppBarCustom(pageTitle: "Aulas"),
         drawer: MainDrawer(),
         body: Observer(builder: (_) {
-          var classSchedules = classListStore.allClass;
+          var classSchedules = classListStore.findByTeacher(teacherStore.id);
 
           return classSchedules.isNotEmpty
               ? Padding(
