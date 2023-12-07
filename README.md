@@ -12,7 +12,7 @@ Certifique-se de ter o Flutter instalado em seu sistema. Se ainda não tiver, si
 
 ### Passos para Instalação
 #### Clone o Repositório:
-```git clone https://github.com/seu-usuario/gereaulas_mobile.git```
+```git clone https://github.com/ritallopes/gereaulas_mobile.git```
 
 #### Navegue até o Diretório do Projeto:
 ```cd gereaulas_mobile```
