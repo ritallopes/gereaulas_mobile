@@ -1,6 +1,6 @@
 # GereAulas: Gerenciador de Aulas Particulares para Professores Ocupados
 ## Sobre o Projeto
-O GereAulas é um aplicativo mobile desenvolvido em Flutter, projetado para auxiliar professores na gestão de suas aulas particulares. Este repositório contém o código-fonte do aplicativo. Mas o executável você pode obter 
+O GereAulas é um aplicativo mobile desenvolvido em Flutter, projetado para auxiliar professores na gestão de suas aulas particulares. Este repositório contém o código-fonte do aplicativo. Mas o executável você pode obter em https://drive.google.com/file/d/1hDOynnDHii7yfXuGf-_omGW2BXZ6qH4B/view?usp=drive_link
 
 ## Detalhes Adicionais
 [Histórias dos Usuários](https://docs.google.com/document/d/1ZMLp2Jv_MK-n3qjDYkDD6KRgFyWMfO-7qQCkPM16Vxw/edit?usp=sharing)   
