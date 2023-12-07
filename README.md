@@ -26,7 +26,7 @@ Inicie o Emulador ou Conecte um Dispositivo Físico:
 Certifique-se de que um emulador esteja em execução ou que um dispositivo físico esteja conectado.
 Execute o Aplicativo:
 
-```flutter run````
+```flutter run```
 
 Acesso ao Aplicativo:
 
